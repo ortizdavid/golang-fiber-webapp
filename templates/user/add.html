@@ -1,0 +1,33 @@
+{{ template "partials/header-back" . }}
+
+    <div class="">
+        <form class="" action="/users/add" method="POST">
+            <div class="field">
+                <label for=""><strong>Username:</strong></label>
+                <input class="form-control" type="text" name="username" id="" autofocus>
+            </div>
+            <div>
+                <label for=""><strong>Role:</strong></label>
+                <select class="form-control" name="role_id" id="">
+                    {{ range .Roles }}
+                        <option value="{{ .RoleId }}">{{ .RoleName }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="field">
+                <label for=""><strong>Password:</strong></label>
+                <input class="form-control" type="password" name="password" id="">
+            </div>
+            <div class="field">
+                <label for=""><strong>Password Confirmation:</strong></label>
+                <input class="form-control" type="password" name="password_conf" id="">
+            </div>
+            <br>
+            <div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/users" class="btn btn-danger">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+{{ template "partials/footer-back" . }}

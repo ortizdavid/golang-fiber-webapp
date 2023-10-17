@@ -1,0 +1,26 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/user-data" style="color: white">
+            {{ .LoggedUser.RoleName }}
+        </a>
+        <button class="navbar-toggler" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarScroll">
+            <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+                {{ if eq .LoggedUser.RoleCode "admin" }}
+                    {{ template "partials/menu-admin" .}}
+                {{ else if eq .LoggedUser.RoleCode "normal" }}
+                    {{ template "partials/menu-normal" .}}
+                {{ else }}
+                    {{ template "partials/404-menu" .}}
+                {{ end }}
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/logout"  style="color: white">
+                        Logout
+                    </a>
+                </li>
+            </ul> 
+        </div> 
+    </div>
+</nav>

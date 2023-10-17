@@ -1,0 +1,47 @@
+{{ template "partials/header-back" . }}
+
+    <div class="">
+        <form class="" action="/tasks/{{ .Task.UniqueId }}/edit" method="POST">
+            <div class="field">
+                <label for="">Task Name:</label>
+                <input class="form-control" type="text" name="task_name"  value="{{ .Task.TaskName }}" id="" autofocus>
+            </div>
+            <div class="field">
+                <label for="">Start Date:</label>
+                <input type="date" class="form-control" name="start_date"  value="{{ .Task.StartDate }}" id="">
+            </div>
+            <div class="field">
+                <label for="">End Date:</label>
+                <input class="form-control" type="date"  name="end_date"  value="{{ .Task.EndDate }}" id="">
+            </div>
+            <div>
+                <label for="">Complexity:</label>
+                <select class="form-control" name="complexity_id" id="">
+                    <option value="{{ .Task.ComplexityId }}">{{ .Task.ComplexityName }}</option>
+                    {{ range .Complexities }}
+                        <option value="{{ .ComplexityId }}">{{ .ComplexityName }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div>
+                <label for="">Status:</label>
+                <select class="form-control" name="status_id" id="">
+                    <option value="{{ .Task.StatusId }}">{{ .Task.StatusName }}</option>
+                    {{ range .Statuses }}
+                        <option value="{{ .StatusId }}">{{ .StatusName }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="field">
+                <label for="">Description:</label>
+                <textarea class="form-control" name="description" id="" cols="30" rows="5">{{ .Task.Description }}</textarea>
+            </div>
+            <br>
+            <div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/tasks/{{ .Task.UniqueId }}/details" class="btn btn-danger">Cancel</a>
+            </div>
+        </form>
+    </div>
+    
+{{ template "partials/footer-back" . }}

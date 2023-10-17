@@ -1,0 +1,49 @@
+<br><br>
+<div onclick="window.location.href='/users'" class="card border-primary mb-3" style="max-width: 18rem;">
+  <h3 class="card-header">Users</h3>
+  <div class="card-body">
+    <h5 class="card-title">{{ .Statistics.Users }}</h5>
+  </div>
+</div>
+
+<div onclick="window.location.href='/tasks'" class="card border-primary mb-3" style="max-width: 18rem;">
+  <h3 class="card-header">Tasks</h3>
+  <div class="card-body">
+    <h5 class="card-title">{{ .Statistics.Tasks }}</h5>
+  </div>
+</div>
+
+<div onclick="window.location.href='/tasks?status=completed'" class="card border-primary mb-3" style="max-width: 18rem;">
+  <h3 class="card-header">Completed Tasks</h3>
+  <div class="card-body">
+    <h5 class="card-title">{{ .Statistics.CompletedTasks }}</h5>
+  </div>
+</div>
+
+<div onclick="window.location.href='/tasks?status=in-progress'" class="card border-primary mb-3" style="max-width: 18rem;">
+  <h3 class="card-header">In Progress Tasks</h3>
+  <div class="card-body">
+    <h5 class="card-title">{{ .Statistics.InProgressTasks }}</h5>
+  </div>
+</div>
+
+<div onclick="window.location.href='/tasks?status=pending'" class="card border-primary mb-3" style="max-width: 18rem;">
+  <h3 class="card-header">Pending Tasks</h3>
+  <div class="card-body">
+    <h5 class="card-title">{{ .Statistics.PendingTasks }}</h5>
+  </div>
+</div>
+
+<div onclick="window.location.href='/tasks?status=cancelled'" class="card border-primary mb-3" style="max-width: 18rem;">
+  <h3 class="card-header">Cancelled Tasks</h3>
+  <div class="card-body">
+    <h5 class="card-title">{{ .Statistics.CanceledTasks }}</h5>
+  </div>
+</div>
+
+<div onclick="window.location.href='/tasks?status=blocked'" class="card border-primary mb-3" style="max-width: 18rem;">
+  <h3 class="card-header">Blocked Tasks</h3>
+  <div class="card-body">
+    <h5 class="card-title">{{ .Statistics.BlockedTasks }}</h5>
+  </div>
+</div>

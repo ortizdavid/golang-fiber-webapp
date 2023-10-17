@@ -1,0 +1,9 @@
+package helpers
+
+const (
+	BYTE = 1
+	KILO_BYTE = BYTE * 1024
+	MEGA_BYTE = KILO_BYTE * 1024
+	GIGA_BYTE = MEGA_BYTE * 1024
+	TERA_BYTE = MEGA_BYTE * 1024
+)

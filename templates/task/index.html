@@ -1,0 +1,61 @@
+{{ template "partials/header-back" . }}
+
+    <div class="">
+        <div class="">
+            
+            <div align="right">
+                <a href="/tasks/search" class="btn btn-primary">Search</a>
+            </div>
+
+            {{ if .Count }}
+                <p><b>Total: </b>{{ .Count }}</p>
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>User</th>
+                            <th>Complexity</th>
+                            <th>Status</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .Tasks }}
+                            <tr class=" {{ if eq .StatusCode "pending" }} alert-warning 
+                                    {{ else if eq .StatusCode "completed" }} alert-success 
+                                    {{ else if eq .StatusCode "in-progress" }} alert-info 
+                                    {{ else if eq .StatusCode "canceled" }} alert-danger 
+                                    {{ else if eq .StatusCode "blocked" }} alert-dark 
+                                    {{ else }} {{ end }}">
+                                <td class="collapsing">{{ .TaskId }}</td>
+                                <td>{{ .TaskName }}</td>
+                                <td>{{ .UserName }}</td>
+                                <td>{{ .ComplexityName }}</td>
+                                <td>{{ .StatusName }}</td>
+                                <td>
+                                    <a class="btn btn-primary" href="/tasks/{{ .UniqueId }}/details">
+                                        Details
+                                    </a>
+                                </td>
+                            </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+                <div>
+                    {{ if .Pagination.PrevPage }}
+                        <a href="/tasks?page={{ .Pagination.PrevPage }}" class="btn btn-link btn-sm"><< Previous Page</a> | 
+                    {{ end }}
+                    {{ if .Pagination.NextPage }}
+                        <a href="/tasks?page={{ .Pagination.NextPage }}" class="btn btn-link btn-sm">Next Page >></a>
+                    {{ end }}
+                </div>
+            {{ else }}
+                <div class="alert alert-warning">
+                    <h5>No Records Found!</h5>
+                </div>
+            {{ end }}
+        </div>
+    </div>
+        
+{{ template "partials/footer-back" . }}

@@ -1,0 +1,13 @@
+{{ template "partials/header-back" . }}
+
+    <div class="row">
+        {{ if eq .LoggedUser.RoleCode "admin" }}
+            {{ template "back-office/home-admin". }}
+        {{ else if eq .LoggedUser.RoleCode "normal" }}
+            {{ template "back-office/home-normal". }}
+        {{ else }}
+            {{ template "back-office/404-home". }}
+        {{ end }}
+    </div>
+    
+{{ template "partials/footer-back" . }}

@@ -1,0 +1,21 @@
+{{ template "partials/header-back" . }}
+
+    <div class="">
+        <form class="" action="/users/{{ .User.UniqueId }}/deactivate" method="POST">
+            <div class="field">
+                <label for=""><strong>Username:</strong></label>
+                <input class="form-control" type="text" value="{{ .User.UserName }}" id="" readonly>
+            </div>
+            <div class="field">
+                <label for=""><strong>Rolename</strong></label>
+                <input class="form-control" type="text" value="{{ .User.RoleName }}" id="" readonly>
+            </div>
+            <br>
+            <div>
+                <button type="submit" class="btn btn-primary">Confirm Deactivation</button>
+                <a href="/users/{{ .User.UniqueId }}/details" class="btn btn-danger">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+{{ template "partials/footer-back" . }}

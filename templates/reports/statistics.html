@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        table { 
+            border-collapse: collapse; 
+            width:100%; 
+        }
+        .table-report {
+            width: 100%;
+        }
+        th { 
+            background-color: grey; 
+            color:white;
+            height: 20px; 
+            padding:3px; 
+            text-align:left;
+        }
+        td { 
+            padding: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <h2>{{ .AppName }}</h2>
+    <h3>{{ .Title }}</h3>
+    <hr>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>All Tasks</td>
+                <td>{{ .Statistics.Tasks }}</td>
+            </tr>
+            <tr>
+                <td>Completed Tasks</td>
+                <td>{{ .Statistics.CompletedTasks }}</td>
+            </tr>
+            <tr>
+                <td>In Progress Tasks</td>
+                <td>{{ .Statistics.InProgressTasks }}</td>
+            </tr>
+            <tr>
+                <td>Pending Tasks</td>
+                <td>{{ .Statistics.PendingTasks }}</td>
+            </tr>
+            <tr>
+                <td>Canceled Tasks</td>
+                <td>{{ .Statistics.CanceledTasks }}</td>
+            </tr>
+            <tr>
+                <td>Blocked Tasks</td>
+                <td>{{ .Statistics.BlockedTasks }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+{{ template "partials/header-back" . }}
+
+    <div class="">
+        <form class="" action="/users/add-image" method="POST" enctype="multipart/form-data">
+            <div class="field">
+                <label for=""><strong>Username:</strong></label>
+                <input class="form-control" type="text" value="{{ .LoggedUser.UserName }}" id="" readonly>
+            </div>
+            <div class="field">
+                <label for=""><strong>Image:</strong></label>
+                <input class="form-control" type="file" name="user_image" autofocus>
+            </div>
+            <br>
+            <div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/users/user-data" class="btn btn-danger">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+{{ template "partials/footer-back" . }}

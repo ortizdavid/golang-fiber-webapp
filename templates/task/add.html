@@ -1,0 +1,45 @@
+{{ template "partials/header-back" . }}
+
+    <div class="">
+        <form class="" action="/tasks/add" method="POST">
+            <div class="field">
+                <label for=""><strong>Task Name:</strong></label>
+                <input class="form-control" type="text" name="task_name" id="" autofocus>
+            </div>
+            <div class="field">
+                <label for=""><strong>Start Date:</strong></label>
+                <input type="date" class="form-control" name="start_date" id="">
+            </div>
+            <div class="field">
+                <label for=""><strong>End Date:</strong></label>
+                <input class="form-control" type="date" name="end_date" id="">
+            </div>
+            <div>
+                <label for=""><strong>Complexity:</strong></label>
+                <select class="form-control" name="complexity_id" id="">
+                    {{ range .Complexities }}
+                        <option value="{{ .ComplexityId }}">{{ .ComplexityName }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div>
+                <label for=""><strong>Status:</strong></label>
+                <select class="form-control" name="status_id" id="">
+                    {{ range .Statuses }}
+                        <option value="{{ .StatusId }}">{{ .StatusName }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <div class="field">
+                <label for=""><strong>Description:</strong></label>
+                <textarea class="form-control" name="description" id="" cols="30" rows="5"></textarea>
+            </div>
+            <br>
+            <div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/tasks" class="btn btn-danger">Cancel</a>
+            </div>
+        </form>
+    </div>
+    
+{{ template "partials/footer-back" . }}

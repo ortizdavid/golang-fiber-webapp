@@ -1,0 +1,19 @@
+{{ template "partials/header-back" . }}
+
+    <div class="">
+        {{ if eq .LoggedUser.Image ""}}
+            <img src="/images/blank-user.png" class="btn btn-primary btn-sm" alt=""><br>
+            <a href="/users/add-image" class="btn-primary btn-sm">
+                Update Image
+            </a>
+        {{ end }}
+        <img class="img img-rounded" src="/uploads/imgs/{{ .LoggedUser.Image }}" alt="" style="width: 30%;">
+        <p><strong>Userame: </strong>{{ .LoggedUser.UserName }}</p>
+        <p><strong>Role: </strong>{{ .LoggedUser.RoleName }}</p>
+        <p><strong>Active: </strong>{{ .LoggedUser.Active }}</p>
+        <p><strong>Created at: </strong>{{ .LoggedUser.CreatedAtStr }}</p>
+        <p><strong>Updated at: </strong>{{ .LoggedUser.UpdatedAtStr }}</p>
+        
+    </div>    
+
+{{ template "partials/footer-back" . }}

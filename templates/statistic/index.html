@@ -1,0 +1,38 @@
+{{ template "partials/header-back" . }}
+
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Item</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>All Tasks</td>
+                <td>{{ .Statistics.Tasks }}</td>
+            </tr>
+            <tr>
+                <td>Completed Tasks</td>
+                <td>{{ .Statistics.CompletedTasks }}</td>
+            </tr>
+            <tr>
+                <td>In Progress Tasks</td>
+                <td>{{ .Statistics.InProgressTasks }}</td>
+            </tr>
+            <tr>
+                <td>Pending Tasks</td>
+                <td>{{ .Statistics.PendingTasks }}</td>
+            </tr>
+            <tr>
+                <td>Canceled Tasks</td>
+                <td>{{ .Statistics.CanceledTasks }}</td>
+            </tr>
+            <tr>
+                <td>Blocked Tasks</td>
+                <td>{{ .Statistics.BlockedTasks }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+{{ template "partials/footer-back" . }}

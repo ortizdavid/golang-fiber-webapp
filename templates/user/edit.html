@@ -1,0 +1,26 @@
+{{ template "partials/header-back" . }}
+
+    <div class="">
+        <form class="" action="/users/{{ .User.UniqueId }}/edit" method="POST">
+            <div class="field">
+                <label for=""><strong>Username:</strong></label>
+                <input class="form-control" type="text" value="{{ .User.UserName }}" id="" readonly>
+            </div>
+            <div>
+                <label for=""><strong>Role:</strong></label>
+                <select class="form-control" name="role_id" id="" autofocus>
+                    <option value="{{ .User.RoleId }}">{{ .User.RoleName }}</option>
+                    {{ range .Roles }}
+                        <option value="{{ .RoleId }}">{{ .RoleName }}</option>
+                    {{ end }}
+                </select>
+            </div>
+            <br>
+            <div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/users/{{ .Usr.UniqueId }}" class="btn btn-danger">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+{{ template "partials/footer-back" . }}

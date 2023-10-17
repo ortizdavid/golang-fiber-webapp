@@ -1,0 +1,34 @@
+{{ template "partials/header-back" . }}
+
+    <div class="">
+        <p><strong>Id: </strong>{{ .Task.TaskId }}</p>
+        <p><strong>Task Name: </strong>{{ .Task.TaskName }}</p>
+        <p><strong>User: </strong>{{ .Task.UserName }}</p>
+        <p><strong>Start Date: </strong>{{ .Task.StartDate }}</p>
+        <p><strong>End Date: </strong>{{ .Task.EndDate }}</p>
+        <p><strong>Complexity: </strong>{{ .Task.ComplexityName }}</p>
+        <p><strong>Status: </strong>{{ .Task.StatusName }}</p>
+        <p><strong>Description: </strong>{{ .Task.Description }}</p>
+        <p><strong>Created at: </strong>{{ .Task.CreatedAt }}</p>
+        <p><strong>Updated at: </strong>{{ .Task.UpdatedAt }}</p> 
+        <div align="right">
+            {{ if eq .Task.Attachment ""}}
+                {{ if eq .LoggedUser.RoleCode "normal"}}
+                    <a href="/tasks/{{ .Task.UniqueId }}/add-attachment" class="btn btn-primary">
+                        Add Attachment
+                    </a>
+                {{ end }}
+            {{ else }}
+                <a target="_blank" href="/tasks/{{ .Task.UniqueId }}/view-attachment" class="btn btn-primary">
+                    View Attachment
+                </a>
+            {{ end }}
+            {{ if eq .LoggedUser.UserId .Task.UserId }}
+                <a href="/tasks/{{ .Task.UniqueId }}/edit" class="btn btn-primary">
+                    Edit Task
+                </a> 
+            {{ end }}
+        </div>
+    </div>    
+
+{{ template "partials/footer-back" . }}
