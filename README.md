@@ -43,7 +43,7 @@
 - Copy database script to MySQL Server: [golang_fiber_mvc](database/golang_fiber_mvc.sql)
 - Download [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html)
 - Install *wkhtmltopdf* and add to environment variables
-- clone git repository: ``git clone https://github.com/ortizdavid/go-htmppdf-example``
+- clone git repository: ``git clone https://github.com/ortizdavid/golang-fiber-webapp``
 - Install dependencies: ``go mod install``
 - Create Admin User: ``go run create_user.go``
 - Run application: ``go run main.go``
