@@ -9,7 +9,7 @@
 - [x] Search Users and Tasks
 - [x] Reports (PDF)
 - [x] Statistics (Count Records)
-- [ ] Logs
+- [x] Logs
 - [x] Pagination
 
 ## Architecture
