@@ -52,7 +52,7 @@ func (UserModel) Search(param interface{}) []entities.UserData {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var users []entities.UserData
-	db.Raw("SELECT * FROM view_user_data WHERE user_name=? OR role_name=?", param, param).Scan(&users)
+	db.Raw("SELECT * FROM view_user_data WHERE user_name=?", param).Scan(&users)
 	return users
 }
 
