@@ -56,11 +56,11 @@ func (TaskModel) FindUserId(userId int) entities.Task {
 	return task
 }
 
-func (TaskModel) Search(param interface{}) []entities.TaskData {
+func (TaskModel) Search(param string) []entities.TaskData {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var tasks []entities.TaskData
-	db.Raw("SELECT * FROM view_task_data WHERE task_name=? OR user_name=? OR status_name=? ", param, param, param).Scan(&tasks)
+	db.Raw("SELECT * FROM view_task_data WHERE task_name=?", param).Scan(&tasks)
 	return tasks
 }
 
