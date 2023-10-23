@@ -23,7 +23,7 @@ func (AuthController) login(ctx *fiber.Ctx) error {
 	var userModel models.UserModel
 	userName := ctx.FormValue("username")
 	password := ctx.FormValue("password")
-	user := userModel.GetByUserName(userName)
+	user := userModel.FindByUserName(userName)
 	hashedPassword := user.Password
 	
 	if userModel.ExistsActiveUser(userName) && helpers.CheckPassword(hashedPassword, password) {
@@ -31,9 +31,9 @@ func (AuthController) login(ctx *fiber.Ctx) error {
 		session, _ := store.Get(ctx)
 		session.Set("username", userName)
 		session.Set("password", hashedPassword)
-		session.Set("authenticated", true)
-		session.Set("role", user.RoleName)
 		session.Save()
+		user.Token = helpers.GenerateRandomToken()
+		userModel.Update(user)
 		loggerAuth.Info(fmt.Sprintf("User '%s' authenticated sucessfully!", userName))
 		return ctx.Redirect("/home")
 	} else {

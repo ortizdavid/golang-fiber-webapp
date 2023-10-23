@@ -10,6 +10,7 @@ type User struct {
 	Active  	string `gorm:"column:active;type:enum('Yes', 'No')"`
 	Image  		string `gorm:"column:image;type:varchar(100)"`
 	UniqueId  	string `gorm:"column:unique_id;type:varchar(50)"`
+	Token  		string `gorm:"column:token;type:varchar(150)"`
 	CreatedAt 	time.Time `gorm:"column:created_at"`
 	UpdatedAt  	time.Time `gorm:"column:updated_at"`
 }
@@ -19,15 +20,16 @@ func TableName() string {
 }
 
 type UserData struct {
-	UserId		int 
-	UniqueId 	string
-	UserName 	string
-	Password 	string
-	Active   	string
-	Image   	string
+	UserId			int 
+	UniqueId 		string
+	Token 			string
+	UserName 		string
+	Password 		string
+	Active   		string
+	Image   		string
 	CreatedAtStr 	string
 	UpdatedAtStr  	string
-	RoleId 		int
-	RoleName 	string
-	RoleCode 	string
+	RoleId 			int
+	RoleName 		string
+	RoleCode 		string
 }

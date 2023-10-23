@@ -98,8 +98,9 @@ func (UserController) add(ctx *fiber.Ctx) error {
 		Active:    "Yes",
 		Image:     "",
 		UniqueId:  helpers.GenerateUUID(),
+		Token:     helpers.GenerateRandomToken(),
 		CreatedAt: time.Now(),
-		UpdatedAt:  time.Now(),
+		UpdatedAt: time.Now(),
 	}
 	userModel.Create(user)
 	loggerUser.Info(fmt.Sprintf("User '%s' added successfully", userName))
@@ -124,6 +125,7 @@ func (UserController) edit(ctx *fiber.Ctx) error {
 	user := userModel.FindByUniqueId(id)
 	user.RoleId = helpers.ConvertToInt(roleId)
 	user.UpdatedAt = time.Now()
+	user.Token = helpers.GenerateRandomToken()
 	userModel.Update(user)
 	loggerUser.Info(fmt.Sprintf("User '%s' Updated successfully", user.UserName))
 	return ctx.Redirect("/users")
@@ -189,6 +191,7 @@ func (UserController) activate(ctx *fiber.Ctx) error {
 	user := userModel.FindByUniqueId(id)
 	user.Active = "Yes"
 	user.UpdatedAt = time.Now()
+	user.Token = helpers.GenerateRandomToken()
 	userModel.Update(user)
 	loggerUser.Info(fmt.Sprintf("User '%s' activated sucessfully", user.UserName))
 	return ctx.Redirect("/users/"+id+"/details")

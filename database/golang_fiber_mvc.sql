@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS tasks (
 	end_date DATE,
 	attachment VARCHAR(100),
 	unique_id VARCHAR(50) UNIQUE,
+	token VARCHAR(150),
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW(),
 	CONSTRAINT fk_task_user FOREIGN KEY(user_id) REFERENCES users(user_id),
@@ -66,6 +67,7 @@ CREATE VIEW view_user_data AS
 SELECT us.user_id, us.unique_id,
 	us.user_name, us.password, 
 	us.active, us.image,
+	us.token,
 	DATE_FORMAT(us.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
 	DATE_FORMAT(us.updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at,
 	ro.role_id, ro.role_name,
@@ -92,7 +94,7 @@ FROM tasks ta
 JOIN users us ON(us.user_id = ta.user_id)
 JOIN task_status st ON(st.status_id = ta.status_id)
 JOIN task_complexity co ON(co.complexity_id = ta.complexity_id)
-ORDER BY created_at DESC;
+ORDER BY ta.created_at DESC;
 
 
 -- INSERTS ----------------------------------------------------------------------------
@@ -113,18 +115,19 @@ INSERT INTO task_complexity(complexity_name, code) VALUES("Extremely Hard", "ext
 
 
 -- INDEXES ------------------------------
-
+-- roles
 CREATE INDEX idx_role_name ON roles(role_name);
 CREATE INDEX idx_role_code ON roles(code);
-
+-- Users
 CREATE INDEX idx_user_name ON users(user_name);
 CREATE INDEX idx_active ON users(active);
-
+CREATE INDEX idx_token ON users(active);
+-- Tasks
 CREATE INDEX idx_task_name ON tasks(task_name);
 CREATE INDEX idx_start_end_date ON tasks(start_date, end_date);
-
+-- Status
 CREATE INDEX idx_status_name ON task_status(status_name);
 CREATE INDEX idx_status_code ON task_status(code);
-
+-- Complexity
 CREATE INDEX idx_complexity_name ON task_complexity(complexity_name);
 CREATE INDEX idx_complexity_code ON task_complexity(code);

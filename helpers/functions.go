@@ -1,9 +1,13 @@
 package helpers
 
 import (
+	
 	"fmt"
-	"strconv"
+	"log"
 	"time"
+	"strconv"
+	"crypto/rand"
+	"encoding/base64"
 	"github.com/google/uuid"
 )
 
@@ -24,4 +28,16 @@ func ConvertToString(value any) string {
 func GenerateCode(prefix string) string {
 	timestamp := time.Now().Format("20060102150405") 
     return prefix + timestamp  
+}
+
+func GenerateRandomToken() string {
+	length := 100
+	randomBytes := make([]byte, length)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		log.Fatal(err)
+		return ""
+	}
+	token := base64.RawURLEncoding.EncodeToString(randomBytes)
+	return token
 }

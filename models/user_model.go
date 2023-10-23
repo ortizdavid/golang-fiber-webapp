@@ -48,6 +48,14 @@ func (UserModel) FindByUniqueId(uniqueId string) entities.User {
 	return user
 }
 
+func (UserModel) FindByUserName(userName string) entities.User {
+	db, _ := config.ConnectDB()
+	defer config.DisconnectDB(db)
+	var user entities.User
+	db.First(&user, "user_name=?", userName)
+	return user
+}
+
 func (UserModel) Search(param interface{}) []entities.UserData {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
