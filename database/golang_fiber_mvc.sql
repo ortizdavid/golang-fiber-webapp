@@ -66,12 +66,13 @@ CREATE VIEW view_user_data AS
 SELECT us.user_id, us.unique_id,
 	us.user_name, us.password, 
 	us.active, us.image,
-	DATE_FORMAT(us.created_at, '%Y-%m-%d %H:%i:%s') AS created_at_str,
-	DATE_FORMAT(us.updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at_str,
+	DATE_FORMAT(us.created_at, '%Y-%m-%d %H:%i:%s') AS created_at,
+	DATE_FORMAT(us.updated_at, '%Y-%m-%d %H:%i:%s') AS updated_at,
 	ro.role_id, ro.role_name,
 	ro.code AS role_code
 FROM users us
-JOIN roles ro ON(ro.role_id = us.role_id);
+JOIN roles ro ON(ro.role_id = us.role_id)
+ORDER BY us.created_at DESC;
 
 -- View view_task_data ta.start_date, ta.end_date,
 DROP VIEW IF EXISTS view_task_data;
@@ -90,7 +91,8 @@ SELECT ta.task_id, ta.unique_id,
 FROM tasks ta
 JOIN users us ON(us.user_id = ta.user_id)
 JOIN task_status st ON(st.status_id = ta.status_id)
-JOIN task_complexity co ON(co.complexity_id = ta.complexity_id);
+JOIN task_complexity co ON(co.complexity_id = ta.complexity_id)
+ORDER BY created_at DESC;
 
 
 -- INSERTS ----------------------------------------------------------------------------
@@ -108,3 +110,21 @@ INSERT INTO task_complexity(complexity_name, code) VALUES("Medium", "medium");
 INSERT INTO task_complexity(complexity_name, code) VALUES("Hard", "Hard");
 INSERT INTO task_complexity(complexity_name, code) VALUES("Very Hard", "very-hard");
 INSERT INTO task_complexity(complexity_name, code) VALUES("Extremely Hard", "extreme-hard");
+
+
+-- INDEXES ------------------------------
+
+CREATE INDEX idx_role_name ON roles(role_name);
+CREATE INDEX idx_role_code ON roles(code);
+
+CREATE INDEX idx_user_name ON users(user_name);
+CREATE INDEX idx_active ON users(active);
+
+CREATE INDEX idx_task_name ON tasks(task_name);
+CREATE INDEX idx_start_end_date ON tasks(start_date, end_date);
+
+CREATE INDEX idx_status_name ON task_status(status_name);
+CREATE INDEX idx_status_code ON task_status(code);
+
+CREATE INDEX idx_complexity_name ON task_complexity(complexity_name);
+CREATE INDEX idx_complexity_code ON task_complexity(code);
