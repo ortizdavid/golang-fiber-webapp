@@ -3,8 +3,8 @@ package config
 import (
 	"os"
 	"time"
-	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/storage/mysql"
+	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/ortizdavid/golang-fiber-webapp/helpers"
 )
 

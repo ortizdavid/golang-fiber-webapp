@@ -1,9 +1,9 @@
 package models
 
 import (
+	"gorm.io/gorm"
 	"github.com/ortizdavid/golang-fiber-webapp/config"
 	"github.com/ortizdavid/golang-fiber-webapp/entities"
-	"gorm.io/gorm"
 )
 
 type RoleModel struct {

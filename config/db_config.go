@@ -1,10 +1,10 @@
 package config
 
 import (
-	"fmt"
 	"os"
-	"gorm.io/driver/mysql"
+	"fmt"
 	"gorm.io/gorm"
+	"gorm.io/driver/mysql"
 )
 
 func ConnectDB() (*gorm.DB, error) {

@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"time"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/ortizdavid/golang-fiber-webapp/config"
 	"github.com/ortizdavid/golang-fiber-webapp/entities"

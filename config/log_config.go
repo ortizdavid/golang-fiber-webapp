@@ -2,12 +2,11 @@ package config
 
 import (
 	"os"
-
-	"github.com/gofiber/fiber/v2"
-	"github.com/ortizdavid/golang-fiber-webapp/helpers"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"github.com/gofiber/fiber/v2"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"github.com/ortizdavid/golang-fiber-webapp/helpers"
 )
 
 

@@ -3,9 +3,8 @@ package helpers
 import (
 	"bytes"
 	"html/template"
-
-	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 	"github.com/gofiber/fiber/v2"
+	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 )
 
 type HtmlPdfGenenerator struct {
