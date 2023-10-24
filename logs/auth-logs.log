@@ -52,3 +52,6 @@
 {"level":"error","ts":1698145250.2630413,"msg":"Authentication failed at: /image/golang-logo.png"}
 {"level":"error","ts":1698145284.6628308,"msg":"Authentication failed at: /image/golang-logo.png"}
 {"level":"error","ts":1698145287.467556,"msg":"Authentication failed at: /image/golang-logo.png"}
+{"level":"error","ts":1698146713.7438538,"msg":"Authentication failed at: /image/golang-logo.png"}
+{"level":"info","ts":1698146758.3795342,"msg":"User 'ortizaad1994@gmail.com' recovered password","path":"/auth/get-recovery-link"}
+{"level":"error","ts":1698146758.4141839,"msg":"Authentication failed at: /image/golang-logo.png"}
