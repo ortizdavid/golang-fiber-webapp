@@ -3,7 +3,7 @@ package helpers
 import (
 	"fmt"
 	"time"
-	"log/slog"
+	"log"
 	"strconv"
 	"strings"
 	"path/filepath"
@@ -25,7 +25,7 @@ func UploadFile(ctx *fiber.Ctx, formFile string, fileType string, savePath strin
     newFileName := generateUniqueFileName(fileName)
     saveFilePath := filepath.Join(savePath, newFileName)
     err = ctx.SaveFile(file, saveFilePath)
-    slog.Info("File: ", newFileName)
+    log.Println("File: ", newFileName)
     if err != nil {
         return "", ctx.Status(fiber.StatusInternalServerError).SendString("Error saving the file")
     }

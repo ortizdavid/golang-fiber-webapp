@@ -32,3 +32,4 @@ func PaginationHandler(ctx *fiber.Ctx) error {
 	pageNumber := pagination.GetPageNumber(ctx, "page")
 	return ctx.Redirect(fmt.Sprintf("/?page=%d", pageNumber))
 }
+

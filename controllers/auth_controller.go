@@ -13,6 +13,18 @@ type AuthController struct {
 
 var loggerAuth = config.NewLogger("auth-logs.log")
 
+func (auth AuthController) RegisterRoutes(router *fiber.App) {
+	group := router.Group("/auth")
+	group.Get("/login", auth.loginForm)
+	group.Post("/login", auth.login)
+	group.Get("/logout", auth.logout)
+	group.Get("/recover-password/:token", auth.recoverPasswordForm)
+	group.Post("/recover-password/:token", auth.recoverPassword)
+	group.Get("/get-recovery-link", auth.getRecoveryLinkForm)
+	group.Post("/get-recovery-link", auth.getRecoveryLink)
+}
+
+
 func (AuthController) loginForm(ctx *fiber.Ctx) error {
 	return ctx.Render("auth/login", fiber.Map{
 		"Title": "Authentication",
@@ -42,6 +54,7 @@ func (AuthController) login(ctx *fiber.Ctx) error {
 	}
 }
 
+
 func (AuthController) logout(ctx *fiber.Ctx) error {
 	loggedUser := GetLoggedUser(ctx)
 	store := config.GetSessionStore()
@@ -51,22 +64,73 @@ func (AuthController) logout(ctx *fiber.Ctx) error {
 	return ctx.Redirect("/auth/login")
 }
 
-func (AuthController) resetPassword(ctx *fiber.Ctx) error {
-	return ctx.SendString("Processing Reset...")
-}
 
-func (AuthController) resetPasswordForm(ctx *fiber.Ctx) error {
-	return ctx.Render("auth/reset-password", fiber.Map{
-		"Title": "Reset Password",
+func (AuthController) getRecoveryLinkForm(ctx *fiber.Ctx) error {
+	return ctx.Render("auth/get-recovery-link", fiber.Map{
+		"Title": "Recovery Link",
 	})
 }
 
-func (auth AuthController) RegisterRoutes(router *fiber.App) {
-	group := router.Group("/auth")
-	group.Get("/login", auth.loginForm)
-	group.Post("/login", auth.login)
-	group.Get("/logout", auth.logout)
-	group.Get("/reset-password", auth.resetPasswordForm)
-	group.Post("/reset-password", auth.resetPassword)
+
+func (AuthController) getRecoveryLink(ctx *fiber.Ctx) error {
+	email := ctx.FormValue("email")
+	var userModel models.UserModel
+	user := userModel.FindByUserName(email)
+	
+	emailService := config.DefaultEmailService()
+	recoverLink := fmt.Sprintf("http://%s/auth/recover-password/%s", config.ListenAddr(), user.Token)
+	htmlBody := `
+		<html>
+			<body>
+				<h1>Password recovery!</h1>
+				<p>Hi, `+user.UserName+`!</p>
+				<p>click on the link below <br> <a href="`+recoverLink+`">`+recoverLink+`</a></p>
+			</body>
+		</html>`
+	err := emailService.SendHTMLEmail(email, "Password Recovery", htmlBody)
+	if err != nil {
+		fmt.Println("Error sending HTML email:", err)
+	}
+	loggerAuth.Info(fmt.Sprintf("User '%s' recovered password", email), config.LogRequestPath(ctx))
+	return ctx.Redirect("/auth/get-recovery-link")
 }
 
+
+func (AuthController) recoverPasswordForm(ctx *fiber.Ctx) error {
+	token := ctx.Params("token")
+	user := models.UserModel{}.FindByToken(token)
+	return ctx.Render("auth/recover-password", fiber.Map{
+		"Title": "Password Recovery",
+		"User": user,
+	})
+}
+
+
+func (AuthController) recoverPassword(ctx *fiber.Ctx) error {
+	password := ctx.FormValue("password")
+	token := ctx.Params("token")
+
+	var userModel models.UserModel
+	user := userModel.FindByToken(token)
+	user.Password = helpers.HashPassword(password)
+	user.Token = helpers.GenerateRandomToken()
+	userModel.Update(user)
+
+	//enviar os credenciais por email
+	emailService := config.DefaultEmailService()
+	htmlBody := `
+		<html>
+			<body>
+				<h1>Password changed successfully!</h1>
+				<p>Hi, `+user.UserName+`!</p>
+				<p>New password is: <b>`+password+`</b></p>
+			</body>
+		</html>`
+	err := emailService.SendHTMLEmail(user.UserName, "New Password", htmlBody)
+	if err != nil {
+		fmt.Println("Error sending HTML email:", err)
+	}
+
+	loggerAuth.Info(fmt.Sprintf("User '%s' recovered password", user.UserName), config.LogRequestPath(ctx))
+	return ctx.Redirect("/auth/login")
+}

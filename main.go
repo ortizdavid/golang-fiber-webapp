@@ -13,6 +13,7 @@ func main() {
 		Views: config.GetTemplateEngine(),
 	})
 	//entities.SetupMigrations()
+	app.Use(controllers.AuthenticationMiddleware)
 	config.ConfigStaticFiles(app)
 	controllers.SetupRoutes(app)
 	app.Listen(config.ListenAddr())

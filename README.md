@@ -40,7 +40,9 @@
 - [go-wkhtmltopdf](https://github.com/SebastiaanKlippert/go-wkhtmltopdf) - For PDF Rendering
 
 ## Installation
-- Copy database script to MySQL Server: [golang_fiber_mvc](database/golang_fiber_mvc.sql)
+- Create database 
+`CREATE DATABASE golang_fiber_mvc; USE golang_fiber_mvc;`
+- Copy database script to MySQL Server: [golang_fiber_mvc.sql](database/golang_fiber_mvc.sql)
 - Download [wkhtmltopdf](https://wkhtmltopdf.org/downloads.html)
 - Install *wkhtmltopdf* and add to environment variables
 - clone git repository: ``git clone https://github.com/ortizdavid/golang-fiber-webapp``
