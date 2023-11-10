@@ -19,8 +19,10 @@ func NewLogger(logFileName string) *zap.Logger {
 		Compress:   true,
 	}
 	// Create a zap core that writes logs to the lumberjack logger
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	zapCore := zapcore.NewCore(
-		zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig()),
+		zapcore.NewJSONEncoder(encoderConfig),
 		zapcore.AddSync(lumberjackLogger),
 		zap.DebugLevel,
 	)

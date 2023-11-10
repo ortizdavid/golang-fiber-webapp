@@ -11,9 +11,10 @@ func AuthenticationMiddleware(ctx *fiber.Ctx) error {
 
 	requestedPath := ctx.Path()
 	if requestedPath ==  "/" || 
-		requestedPath ==  "/static" ||
+		strings.HasPrefix(requestedPath, "/images") ||
+		strings.HasPrefix(requestedPath, "/css") ||
+		strings.HasPrefix(requestedPath, "/js") ||
 		strings.HasPrefix(requestedPath, "/auth") {
-
 		return ctx.Next()
 	}
 	if !IsUserAuthenticated(ctx) {

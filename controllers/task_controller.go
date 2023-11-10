@@ -73,7 +73,6 @@ func (TaskController) index(ctx *fiber.Ctx) error {
 		"Count": count,
 		"LoggedUser": loggedUser,
 	})
-	
 }
 
 func (TaskController) details(ctx *fiber.Ctx) error {

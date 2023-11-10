@@ -1,42 +1,40 @@
 {{ template "partials/header-back" . }}
 
     <div class="">
-        <div class="">
-            <p><b>{{ .Count }} </b>Results Founds for <b><i>{{ .Param }}</i></b></p><br>
-            <table class="table table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>User</th>
-                        <th>Complexity</th>
-                        <th>Status</th>
-                        <th>Options</th>
+        <p><b>{{ .Count }} </b>Results Founds for <b><i>{{ .Param }}</i></b></p><br>
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>User</th>
+                    <th>Complexity</th>
+                    <th>Status</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range .Results }}
+                    <tr class=" {{ if eq .StatusCode "pending" }} alert-warning 
+                            {{ else if eq .StatusCode "completed" }} alert-success 
+                            {{ else if eq .StatusCode "in-progress" }} alert-info 
+                            {{ else if eq .StatusCode "canceled" }} alert-danger 
+                            {{ else if eq .StatusCode "blocked" }} alert-dark 
+                            {{ else }} {{ end }}">
+                        <td class="collapsing">{{ .TaskId }}</td>
+                        <td>{{ .TaskName }}</td>
+                        <td>{{ .UserName }}</td>
+                        <td>{{ .ComplexityName }}</td>
+                        <td>{{ .StatusName }}</td>
+                        <td>
+                            <a class="btn btn-primary" href="/tasks/{{ .UniqueId }}/details">
+                                Details
+                            </a>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    {{ range .Results }}
-                        <tr class=" {{ if eq .StatusCode "pending" }} alert-warning 
-                                {{ else if eq .StatusCode "completed" }} alert-success 
-                                {{ else if eq .StatusCode "in-progress" }} alert-info 
-                                {{ else if eq .StatusCode "canceled" }} alert-danger 
-                                {{ else if eq .StatusCode "blocked" }} alert-dark 
-                                {{ else }} {{ end }}">
-                            <td class="collapsing">{{ .TaskId }}</td>
-                            <td>{{ .TaskName }}</td>
-                            <td>{{ .UserName }}</td>
-                            <td>{{ .ComplexityName }}</td>
-                            <td>{{ .StatusName }}</td>
-                            <td>
-                                <a class="btn btn-primary" href="/tasks/{{ .UniqueId }}/details">
-                                    Details
-                                </a>
-                            </td>
-                        </tr>
-                    {{ end }}
-                </tbody>
-            </table>
-        </div>
+                {{ end }}
+            </tbody>
+        </table>
     </div>
         
 {{ template "partials/footer-back" . }}

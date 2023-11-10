@@ -10,11 +10,11 @@
         <form class="" action="/users/add" method="POST">
             <div class="field">
                 <label for=""><strong>Username:</strong></label>
-                <input class="form-control" type="text" name="username" id="" autofocus>
+                <input class="form-control" type="text" name="username" id="" required autofocus>
             </div>
             <div>
                 <label for=""><strong>Role:</strong></label>
-                <select class="form-control" name="role_id" id="">
+                <select class="form-control" name="role_id" id="" required>
                     {{ range .Roles }}
                         <option value="{{ .RoleId }}">{{ .RoleName }}</option>
                     {{ end }}
@@ -22,11 +22,11 @@
             </div>
             <div class="field">
                 <label for=""><strong>Password:</strong></label>
-                <input class="form-control" type="password" name="password" id="">
+                <input class="form-control" type="password" name="password" minlength="8" id="" required>
             </div>
             <div class="field">
                 <label for=""><strong>Password Confirmation:</strong></label>
-                <input class="form-control" type="password" name="password_conf" id="">
+                <input class="form-control" type="password" name="password_conf" minlength="8" id="" required>
             </div>
             <br>
             <div>

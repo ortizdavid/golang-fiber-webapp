@@ -4,19 +4,19 @@
         <form class="" action="/tasks/add" method="POST">
             <div class="field">
                 <label for=""><strong>Task Name:</strong></label>
-                <input class="form-control" type="text" name="task_name" id="" autofocus>
+                <input class="form-control" type="text" name="task_name" id="" required autofocus>
             </div>
             <div class="field">
                 <label for=""><strong>Start Date:</strong></label>
-                <input type="date" class="form-control" name="start_date" id="">
+                <input type="date" class="form-control" name="start_date" required id="">
             </div>
             <div class="field">
                 <label for=""><strong>End Date:</strong></label>
-                <input class="form-control" type="date" name="end_date" id="">
+                <input class="form-control" type="date" name="end_date" required id="">
             </div>
             <div>
                 <label for=""><strong>Complexity:</strong></label>
-                <select class="form-control" name="complexity_id" id="">
+                <select class="form-control" name="complexity_id" id="" required>
                     {{ range .Complexities }}
                         <option value="{{ .ComplexityId }}">{{ .ComplexityName }}</option>
                     {{ end }}
@@ -24,7 +24,7 @@
             </div>
             <div>
                 <label for=""><strong>Status:</strong></label>
-                <select class="form-control" name="status_id" id="">
+                <select class="form-control" name="status_id" id="" required>
                     {{ range .Statuses }}
                         <option value="{{ .StatusId }}">{{ .StatusName }}</option>
                     {{ end }}
@@ -32,7 +32,7 @@
             </div>
             <div class="field">
                 <label for=""><strong>Description:</strong></label>
-                <textarea class="form-control" name="description" id="" cols="30" rows="5"></textarea>
+                <textarea class="form-control" name="description" id="" cols="30" rows="5" required></textarea>
             </div>
             <br>
             <div>
