@@ -3,15 +3,28 @@ package controllers
 import (
 	"fmt"
 	"strings"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/ortizdavid/golang-fiber-webapp/config"
+	"go.uber.org/zap"
 )
 
 
-func AuthenticationMiddleware(ctx *fiber.Ctx) error {
+var requestLogger = config.NewLogger("requests.log")
 
+func RequestLoggerMiddleware(ctx *fiber.Ctx) error {
+	requestLogger.Info("Request",
+		zap.String("Method", ctx.Method()),
+		zap.String("Path", ctx.Path()),
+		zap.String("StatusCode", fmt.Sprintf("%d", ctx.Response().StatusCode())),
+	)
+	return ctx.Next()
+}
+
+func AuthenticationMiddleware(ctx *fiber.Ctx) error {
 	requestedPath := ctx.Path()
 	if requestedPath ==  "/" || 
-		strings.HasPrefix(requestedPath, "/images") ||
+		strings.HasPrefix(requestedPath, "/image") ||
 		strings.HasPrefix(requestedPath, "/css") ||
 		strings.HasPrefix(requestedPath, "/js") ||
 		strings.HasPrefix(requestedPath, "/auth") {
