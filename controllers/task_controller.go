@@ -42,8 +42,9 @@ func (TaskController) index(ctx *fiber.Ctx) error {
 	pageNumber := pagination.GetPageNumber(ctx, "page")
 	itemsPerPage := config.ItemsPerPage()
 	startIndex := pagination.CalculateStartIndex(pageNumber, itemsPerPage)
-	tasks = taskModel.FindAllDataLimit(startIndex, itemsPerPage)
-	count = int(taskModel.Count())
+	tasks, _ = taskModel.FindAllDataLimit(startIndex, itemsPerPage)
+	countTasks, _ := taskModel.Count()
+	count = int(countTasks)
 	totalPages := pagination.CalculateTotalPages(count, itemsPerPage)
 
 	if pageNumber > totalPages {
@@ -62,8 +63,9 @@ func (TaskController) index(ctx *fiber.Ctx) error {
 			"LoggedUser": loggedUser,
 		})
 	}
-	userTasks := taskModel.FindAllDataByUserIdLimit(loggedUser.UserId, startIndex, itemsPerPage)
-	count = int(taskModel.CountByUser(loggedUser.UserId))
+	userTasks, _ := taskModel.FindAllDataByUserIdLimit(loggedUser.UserId, startIndex, itemsPerPage)
+	countByUser, _ := taskModel.CountByUser(loggedUser.UserId)
+	count = int(countByUser)
 	return ctx.Render("task/my-tasks", fiber.Map{
 		"Title": "My Tasks",
 		"Tasks": userTasks,
@@ -76,7 +78,7 @@ func (TaskController) index(ctx *fiber.Ctx) error {
 
 func (TaskController) details(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
-	task := models.TaskModel{}.GetDataByUniqueId(id)
+	task, _ := models.TaskModel{}.GetDataByUniqueId(id)
 	return ctx.Render("task/details", fiber.Map{
 		"Title": "Task Details",
 		"Task": task,
@@ -85,10 +87,12 @@ func (TaskController) details(ctx *fiber.Ctx) error {
 }
 
 func (TaskController) addForm(ctx *fiber.Ctx) error {
+	complexities, _ := models.TaskComplexityModel{}.FindAll()
+	statuses, _ := models.TaskStatusModel{}.FindAll()
 	return ctx.Render("task/add", fiber.Map{
 		"Title": "Add Tasks",
-		"Complexities": models.TaskComplexityModel{}.FindAll(),
-		"Statuses": models.TaskStatusModel{}.FindAll(),
+		"Complexities": complexities,
+		"Statuses": statuses,
 		"LoggedUser": GetLoggedUser(ctx),
 	})
 }
@@ -126,12 +130,14 @@ func (TaskController) add(ctx *fiber.Ctx) error {
 func (TaskController) editForm(ctx *fiber.Ctx) error {
 	loggedUser := GetLoggedUser(ctx)
 	id := ctx.Params("id")
-	task := models.TaskModel{}.GetDataByUniqueId(id)
+	task, _ := models.TaskModel{}.GetDataByUniqueId(id)
+	statuses, _ := models.TaskStatusModel{}.FindAll()
+	complexities, _ := models.TaskComplexityModel{}.FindAll()
 	return ctx.Render("task/edit", fiber.Map{
 		"Title": "Edit Task",
 		"Task": task,
-		"Statuses": models.TaskStatusModel{}.FindAll(),
-		"Complexities": models.TaskComplexityModel{}.FindAll(),
+		"Statuses": statuses,
+		"Complexities": complexities,
 		"LoggedUser": loggedUser,
 	})
 }
@@ -146,7 +152,7 @@ func (TaskController) edit(ctx *fiber.Ctx) error {
 	endDate := ctx.FormValue("end_date")
 
 	var taskModel models.TaskModel
-	task := taskModel.FindByUniqueId(id)
+	task, _ := taskModel.FindByUniqueId(id)
 	task.TaskName = taskName
 	task.StatusId = helpers.ConvertToInt(statusId)
 	task.ComplexityId = helpers.ConvertToInt(complexityId)
@@ -168,7 +174,7 @@ func (TaskController) searchForm(ctx *fiber.Ctx) error {
 
 func (TaskController) search(ctx *fiber.Ctx) error {
 	param := ctx.FormValue("search_param")
-	results := models.TaskModel{}.Search(param)
+	results, _ := models.TaskModel{}.Search(param)
 	count := len(results)
 	loggedUser := GetLoggedUser(ctx)
 	loggerTask.Info(fmt.Sprintf("User '%s' Searched for Task '%v' and Found %d results", loggedUser.UserName, param, count))
@@ -183,7 +189,7 @@ func (TaskController) search(ctx *fiber.Ctx) error {
 
 func (TaskController) addAttachmentForm(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
-	task := models.TaskModel{}.FindByUniqueId(id)
+	task, _ := models.TaskModel{}.FindByUniqueId(id)
 	return ctx.Render("task/add-attachment", fiber.Map{
 		"Title": "Add Attachment",
 		"Task": task,
@@ -197,7 +203,7 @@ func (TaskController) addAttachment(ctx *fiber.Ctx) error {
 	loggedUser := GetLoggedUser(ctx)
 
 	var taskModel models.TaskModel
-	task := taskModel.FindByUniqueId(id)
+	task, _ := taskModel.FindByUniqueId(id)
 	task.Attachment = attachment
 	task.UpdatedAt = time.Now()
 	taskModel.Update(task)
@@ -208,6 +214,6 @@ func (TaskController) addAttachment(ctx *fiber.Ctx) error {
 
 func (TaskController) viewAttachment(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
-	task := models.TaskModel{}.FindByUniqueId(id)
+	task, _ := models.TaskModel{}.FindByUniqueId(id)
 	return ctx.SendFile("./static/uploads/docs/"+task.Attachment)
 }

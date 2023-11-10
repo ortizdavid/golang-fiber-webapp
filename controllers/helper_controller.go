@@ -14,7 +14,8 @@ func GetLoggedUser(ctx *fiber.Ctx) entities.UserData {
     session, _ := store.Get(ctx)
     userName := helpers.ConvertToString(session.Get("username"))
     password := helpers.ConvertToString(session.Get("password"))
-    return models.UserModel{}.GetByUserNameAndPassword(userName, password)
+	loggedUser, _ := models.UserModel{}.GetByUserNameAndPassword(userName, password)
+    return loggedUser
 }
 
 func IsUserNomal(ctx *fiber.Ctx) bool {

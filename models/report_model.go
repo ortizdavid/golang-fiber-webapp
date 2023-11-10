@@ -10,7 +10,7 @@ type TableReport struct {
 }
 
 func (ReportModel) GetAllUsers() TableReport {
-	rows := UserModel{}.FindAllData()
+	rows, _ := UserModel{}.FindAllData()
 	count := len(rows)
 	return TableReport {
 		Title: "Users",
@@ -20,7 +20,7 @@ func (ReportModel) GetAllUsers() TableReport {
 }
 
 func (ReportModel) GetAllActiveUsers() TableReport {
-	rows := UserModel{}.FindAllByStatus("Yes")
+	rows, _ := UserModel{}.FindAllByStatus("Yes")
 	count := len(rows)
 	return TableReport {
 		Title: "Active Users",
@@ -30,7 +30,7 @@ func (ReportModel) GetAllActiveUsers() TableReport {
 }
 
 func (ReportModel) GetAllTasks() TableReport {
-	rows := TaskModel{}.FindAllData()
+	rows, _ := TaskModel{}.FindAllData()
 	count := len(rows)
 	return TableReport {
 		Title: "Tasks",
@@ -40,7 +40,7 @@ func (ReportModel) GetAllTasks() TableReport {
 }
 
 func (ReportModel) GetAllPendingTasks() TableReport {
-	rows := TaskModel{}.FindAllDataByStatus("pending")
+	rows, _ := TaskModel{}.FindAllDataByStatus("pending")
 	count := len(rows)
 	return TableReport {
 		Title: "Pending Tasks",
@@ -50,7 +50,7 @@ func (ReportModel) GetAllPendingTasks() TableReport {
 }
 
 func (ReportModel) GetAllCompletedTasks() TableReport {
-	rows := TaskModel{}.FindAllDataByStatus("completed")
+	rows, _ := TaskModel{}.FindAllDataByStatus("completed")
 	count := len(rows)
 	return TableReport {
 		Title: "Completed Tasks",
@@ -60,7 +60,7 @@ func (ReportModel) GetAllCompletedTasks() TableReport {
 }
 
 func (ReportModel) GetAllInProgressTasks() TableReport {
-	rows := TaskModel{}.FindAllDataByStatus("in-progress")
+	rows, _ := TaskModel{}.FindAllDataByStatus("in-progress")
 	count := len(rows)
 	return TableReport {
 		Title: "In Progress",
@@ -70,7 +70,7 @@ func (ReportModel) GetAllInProgressTasks() TableReport {
 }
 
 func (ReportModel) GetAllBlockedTasks() TableReport {
-	rows := TaskModel{}.FindAllDataByStatus("blocked")
+	rows, _ := TaskModel{}.FindAllDataByStatus("blocked")
 	count := len(rows)
 	return TableReport {
 		Title: "Blocked Tasks",
@@ -80,7 +80,7 @@ func (ReportModel) GetAllBlockedTasks() TableReport {
 }
 
 func (ReportModel) GetAllCancelledTasks() TableReport {
-	rows := TaskModel{}.FindAllDataByStatus("canceled")
+	rows, _ := TaskModel{}.FindAllDataByStatus("canceled")
 	count := len(rows)
 	return TableReport {
 		Title: "Cancelled Tasks",

@@ -9,46 +9,66 @@ import (
 type TaskComplexityModel struct {
 }
 
-func (TaskComplexityModel) Create(complexity entities.TaskComplexity) *gorm.DB {
+func (TaskComplexityModel) Create(complexity entities.TaskComplexity) (*gorm.DB, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
-	return db.Create(&complexity)
+	result := db.Create(&complexity)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return result, nil
 }
 
-func (TaskComplexityModel) FindAll() []entities.TaskComplexity {
+func (TaskComplexityModel) FindAll() ([]entities.TaskComplexity, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
-	complexities := []entities.TaskComplexity{}
-	db.Find(&complexities)
-	return complexities
+	var complexities []entities.TaskComplexity
+	result := db.Find(&complexities)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return complexities, nil
 }
 
-func (TaskComplexityModel) Update(complexity entities.TaskComplexity) *gorm.DB {
+func (TaskComplexityModel) Update(complexity entities.TaskComplexity) (*gorm.DB, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
-	return db.Save(&complexity)
+	result := db.Save(&complexity)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return result, nil
 }
 
-func (TaskComplexityModel) FindById(id int) entities.TaskComplexity {
+func (TaskComplexityModel) FindById(id int) (entities.TaskComplexity, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var complexity entities.TaskComplexity
-	db.First(&complexity, id)
-	return complexity
+	result := db.First(&complexity, id)
+	if result.Error != nil {
+		return entities.TaskComplexity{}, result.Error
+	}
+	return complexity, nil
 }
 
-func (TaskComplexityModel) FindByCode(code string) entities.TaskComplexity {
+func (TaskComplexityModel) FindByCode(code string) (entities.TaskComplexity, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var complexity entities.TaskComplexity
-	db.Where("code=?", code).First(&complexity)
-	return complexity
+	result := db.Where("code=?", code).First(&complexity)
+	if result.Error != nil {
+		return entities.TaskComplexity{}, result.Error
+	}
+	return complexity, nil
 }
 
-func (TaskComplexityModel) Count() int64 {
+func (TaskComplexityModel) Count() (int64, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var count int64
-	db.Table("task_complexity").Count(&count)
-	return count
+	result := db.Table("task_complexity").Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return count, nil
 }

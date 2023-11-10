@@ -11,26 +11,39 @@ type StatisticCount struct {
 }
 
 func GetStatisticsCount() StatisticCount {
+	countUsers, _ :=  UserModel{}.Count()
+	countTasks, _ := TaskModel{}.Count()
+	countPending, _ := TaskModel{}.CountByStatus("pending")
+	countCompleted, _ := TaskModel{}.CountByStatus("completed")
+	countInProgress, _ := TaskModel{}.CountByStatus("in-progress")
+	countBlocked, _ := TaskModel{}.CountByStatus("blocked")
+	countCanceled, _ := TaskModel{}.CountByStatus("canceled")
 	return StatisticCount{
-		Users:           UserModel{}.Count(),
-		Tasks:           TaskModel{}.Count(),
-		PendingTasks:    TaskModel{}.CountByStatus("pending"),
-		CompletedTasks:  TaskModel{}.CountByStatus("completed"),
-		InProgressTasks: TaskModel{}.CountByStatus("in-progress"),
-		BlockedTasks:    TaskModel{}.CountByStatus("blocked"),
-		CanceledTasks:   TaskModel{}.CountByStatus("canceled"),
+		Users:           countUsers,
+		Tasks:           countTasks,
+		PendingTasks:    countPending,
+		CompletedTasks:  countCompleted,
+		InProgressTasks: countInProgress,
+		BlockedTasks:    countBlocked,
+		CanceledTasks:   countCanceled,
 	}
 }
 
 func GetStatisticsCountByUser(userId int) StatisticCount {
+	countTasks, _ := TaskModel{}.CountByUser(userId)
+	countPending, _ := TaskModel{}.CountByStatusAndUser("pending", userId)
+	countCompleted, _ := TaskModel{}.CountByStatusAndUser("completed", userId)
+	countInProgress, _ := TaskModel{}.CountByStatusAndUser("in-progress", userId)
+	countBlocked, _ := TaskModel{}.CountByStatusAndUser("blocked", userId)
+	countCanceled, _ := TaskModel{}.CountByStatusAndUser("canceled", userId)
 	return StatisticCount{
 		Users:           0,
-		Tasks:           TaskModel{}.CountByUser(userId),
-		PendingTasks:    TaskModel{}.CountByStatusAndUser("pending", userId),
-		CompletedTasks:  TaskModel{}.CountByStatusAndUser("completed", userId),
-		InProgressTasks: TaskModel{}.CountByStatusAndUser("in-progress", userId),
-		BlockedTasks:    TaskModel{}.CountByStatusAndUser("blocked", userId),
-		CanceledTasks:   TaskModel{}.CountByStatusAndUser("canceled", userId),
+		Tasks:           countTasks,
+		PendingTasks:    countPending,
+		CompletedTasks:  countCompleted,
+		InProgressTasks: countInProgress,
+		BlockedTasks:    countBlocked,
+		CanceledTasks:   countCanceled,
 	}
 }
 

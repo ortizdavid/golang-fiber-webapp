@@ -9,7 +9,6 @@ import (
 )
 
 func GetSessionStore() *session.Store {
-
 	storage := mysql.New(mysql.Config{
 		ConnectionURI: ConnectionString(),
 		Reset:         false,

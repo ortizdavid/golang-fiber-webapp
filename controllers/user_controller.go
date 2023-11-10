@@ -13,6 +13,12 @@ import (
 type UserController struct {
 }
 
+type UserValidation struct {
+	Username string `form:"username" validate:"required,min=3"`
+	Password    string `form:"password" validate:"required"`
+	RoleId    string `form:"role_id" validate:"required"`
+}
+
 var loggerUser = config.NewLogger("user-logs.log")
 
 func (user UserController) RegisterRoutes(router *fiber.App) {
@@ -42,8 +48,9 @@ func (UserController) index(ctx *fiber.Ctx) error {
 	pageNumber := pagination.GetPageNumber(ctx, "page")
 	itemsPerPage := config.ItemsPerPage()
 	startIndex := pagination.CalculateStartIndex(pageNumber, itemsPerPage)
-	users := userModel.FindAllDataLimit(startIndex, itemsPerPage)
-	count := int(userModel.Count())
+	users, _ := userModel.FindAllDataLimit(startIndex, itemsPerPage)
+	countUsers, _ := userModel.Count()
+	count := int(countUsers)
 	totalPages := pagination.CalculateTotalPages(count, itemsPerPage)
 
 	if pageNumber > totalPages {
@@ -66,7 +73,7 @@ func (UserController) index(ctx *fiber.Ctx) error {
 
 func (UserController) details(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
-	user := models.UserModel{}.GetDataByUniqueId(id)
+	user, _ := models.UserModel{}.GetDataByUniqueId(id)
 	return ctx.Render("user/details", fiber.Map{
 		"Title": "User Details",
 		"User": user,
@@ -75,7 +82,7 @@ func (UserController) details(ctx *fiber.Ctx) error {
 }
 
 func (UserController) addForm(ctx *fiber.Ctx) error {
-	roles := models.RoleModel{}.FindAll()
+	roles, _ := models.RoleModel{}.FindAll()
 	return ctx.Render("user/add", fiber.Map{
 		"Title": "Add User",
 		"Roles": roles,
@@ -108,10 +115,11 @@ func (UserController) add(ctx *fiber.Ctx) error {
 
 func (UserController) editForm(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
-	user := models.UserModel{}.GetDataByUniqueId(id)
+	user, _ := models.UserModel{}.GetDataByUniqueId(id)
+	roles, _ := models.RoleModel{}.FindAll()
 	return ctx.Render("user/edit", fiber.Map{
 		"Title": "Edit User",
-		"Roles": models.RoleModel{}.FindAll(),
+		"Roles": roles,
 		"User": user,
 		"LoggedUser": GetLoggedUser(ctx),
 	})
@@ -121,7 +129,7 @@ func (UserController) edit(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	roleId := ctx.FormValue("role_id")
 	var userModel models.UserModel
-	user := userModel.FindByUniqueId(id)
+	user, _ := userModel.FindByUniqueId(id)
 	user.RoleId = helpers.ConvertToInt(roleId)
 	user.UpdatedAt = time.Now()
 	user.Token = helpers.GenerateRandomToken()
@@ -140,7 +148,7 @@ func (UserController) searchForm(ctx *fiber.Ctx) error {
 
 func (UserController) search(ctx *fiber.Ctx) error {
 	param := ctx.FormValue("search_param")
-	results := models.UserModel{}.Search(param)
+	results, _ := models.UserModel{}.Search(param)
 	count := len(results)
 	loggedUser := GetLoggedUser(ctx)
 	loggerUser.Info(fmt.Sprintf("User '%s' Searched for User '%v' and Found %d results", loggedUser.UserName, param, count))
@@ -155,7 +163,7 @@ func (UserController) search(ctx *fiber.Ctx) error {
 
 func (UserController) deactivateForm(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
-	user := models.UserModel{}.GetDataByUniqueId(id)
+	user, _ := models.UserModel{}.GetDataByUniqueId(id)
 	return ctx.Render("user/deactivate", fiber.Map{
 		"Title": "Deactivate User",
 		"User": user,
@@ -166,7 +174,7 @@ func (UserController) deactivateForm(ctx *fiber.Ctx) error {
 func (UserController) deactivate(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	var userModel models.UserModel
-	user := userModel.FindByUniqueId(id)
+	user, _ := userModel.FindByUniqueId(id)
 	user.Active = "No"
 	user.UpdatedAt = time.Now()
 	userModel.Update(user)
@@ -176,7 +184,7 @@ func (UserController) deactivate(ctx *fiber.Ctx) error {
 
 func (UserController) activateForm(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
-	user := models.UserModel{}.GetDataByUniqueId(id)
+	user, _ := models.UserModel{}.GetDataByUniqueId(id)
 	return ctx.Render("user/activate", fiber.Map{
 		"Title": "Activate User",
 		"User": user,
@@ -187,7 +195,7 @@ func (UserController) activateForm(ctx *fiber.Ctx) error {
 func (UserController) activate(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	var userModel models.UserModel
-	user := userModel.FindByUniqueId(id)
+	user, _ := userModel.FindByUniqueId(id)
 	user.Active = "Yes"
 	user.UpdatedAt = time.Now()
 	user.Token = helpers.GenerateRandomToken()
@@ -207,7 +215,7 @@ func (UserController) addImage(ctx *fiber.Ctx) error {
 	userImage, _ := helpers.UploadFile(ctx, "user_image", "image", config.UploadImagePath())
 	loggedUser := GetLoggedUser(ctx)
 	var userModel models.UserModel
-	user := userModel.FindById(loggedUser.UserId)
+	user, _ := userModel.FindById(loggedUser.UserId)
 	user.Image = userImage
 	user.UpdatedAt = time.Now()
 	userModel.Update(user)

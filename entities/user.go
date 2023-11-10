@@ -20,6 +20,7 @@ func TableName() string {
 }
 
 type UserData struct {
+
 	UserId			int 
 	UniqueId 		string
 	Token 			string

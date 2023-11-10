@@ -10,176 +10,243 @@ type UserModel struct {
 	LastInsertId int
 }
 
-func (userModel *UserModel) Create(user entities.User) *gorm.DB {
+func (userModel *UserModel) Create(user entities.User) (*gorm.DB, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	result := db.Create(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 	userModel.LastInsertId = user.UserId
-	return result
+	return result, nil
 }
 
-func (UserModel) FindAll() []entities.User {
+func (UserModel) FindAll() ([]entities.User, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
-	users := []entities.User{}
-	db.Find(&users)
-	return users
+	var users []entities.User
+	result := db.Find(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
 }
 
-func (UserModel) Update(user entities.User) *gorm.DB {
+func (UserModel) Update(user entities.User) (*gorm.DB, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
-	return db.Save(&user)
+	result := db.Save(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return result, nil
 }
 
-func (UserModel) FindById(id int) entities.User {
-	db, _ := config.ConnectDB()
-	defer config.DisconnectDB(db)
-	var user entities.User
-	db.First(&user, id)
-	return user
-}
-
-func (UserModel) FindByUniqueId(uniqueId string) entities.User {
-	db, _ := config.ConnectDB()
-	defer config.DisconnectDB(db)
-	var user entities.User
-	db.First(&user, "unique_id=?", uniqueId)
-	return user
-}
-
-func (UserModel) FindByUserName(userName string) entities.User {
+func (UserModel) FindById(id int) (entities.User, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var user entities.User
-	db.First(&user, "user_name=?", userName)
-	return user
+	result := db.First(&user, id)
+	if result.Error != nil {
+		return entities.User{}, result.Error
+	}
+	return user, nil
 }
 
-func (UserModel) FindByToken(token string) entities.User {
+func (UserModel) FindByUniqueId(uniqueId string) (entities.User, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var user entities.User
-	db.First(&user, "token=?", token)
-	return user
+	result := db.First(&user, "unique_id=?", uniqueId)
+	if result.Error != nil {
+		return entities.User{}, result.Error
+	}
+	return user, nil
 }
 
-func (UserModel) Search(param interface{}) []entities.UserData {
+func (UserModel) FindByUserName(userName string) (entities.User, error) {
+	db, _ := config.ConnectDB()
+	defer config.DisconnectDB(db)
+	var user entities.User
+	result := db.First(&user, "user_name=?", userName)
+	if result.Error != nil {
+		return entities.User{}, result.Error
+	}
+	return user, nil
+}
+
+func (UserModel) FindByToken(token string) (entities.User, error) {
+	db, _ := config.ConnectDB()
+	defer config.DisconnectDB(db)
+	var user entities.User
+	result := db.First(&user, "token=?", token)
+	if result.Error != nil {
+		return entities.User{}, result.Error
+	}
+	return user, nil
+}
+
+func (UserModel) Search(param interface{}) ([]entities.UserData, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var users []entities.UserData
-	db.Raw("SELECT * FROM view_user_data WHERE user_name=?", param).Scan(&users)
-	return users
+	result := db.Raw("SELECT * FROM view_user_data WHERE user_name=?", param).Scan(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
 }
 
-func (UserModel) Count() int64 {
+func (UserModel) Count() (int64, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var count int64
-	db.Table("users").Count(&count)
-	return count
+	result := db.Table("users").Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return count, nil
 }
 
-func (UserModel) FindAllOrdered() []entities.User {
+func (UserModel) FindAllOrdered() ([]entities.User, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
-	users := []entities.User{}
-	db.Order("user_name ASC").Find(&users)
-	return users
+	var users []entities.User
+	result := db.Order("user_name ASC").Find(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
 }
 
-func (UserModel) GetDataById(id int) entities.UserData {
+func (UserModel) GetDataById(id int) (entities.UserData, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var userData entities.UserData
-	db.Raw("SELECT * FROM view_user_data WHERE user_id=?", id).Scan(&userData)
-	return userData
+	result := db.Raw("SELECT * FROM view_user_data WHERE user_id=?", id).Scan(&userData)
+	if result.Error != nil {
+		return entities.UserData{}, result.Error
+	}
+	return userData, nil
 }
 
-func (UserModel) GetDataByUniqueId(uniqueId string) entities.UserData {
+func (UserModel) GetDataByUniqueId(uniqueId string) (entities.UserData, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var userData entities.UserData
-	db.Raw("SELECT * FROM view_user_data WHERE unique_id=?", uniqueId).Scan(&userData)
-	return userData
+	result := db.Raw("SELECT * FROM view_user_data WHERE unique_id=?", uniqueId).Scan(&userData)
+	if result.Error != nil {
+		return entities.UserData{}, result.Error
+	}
+	return userData, nil
 }
 
-func (UserModel) FindAllData() []entities.UserData {
+func (UserModel) FindAllData() ([]entities.UserData, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var users []entities.UserData
-	db.Raw("SELECT * FROM view_user_data").Scan(&users)
-	return users
+	result := db.Raw("SELECT * FROM view_user_data").Scan(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
 }
 
-func (UserModel) FindAllDataLimit(start int, end int) []entities.UserData {
+func (UserModel) FindAllDataLimit(start int, end int) ([]entities.UserData, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var users []entities.UserData
-	db.Raw("SELECT * FROM view_user_data LIMIT ?, ?", start, end).Scan(&users)
-	return users
+	result := db.Raw("SELECT * FROM view_user_data LIMIT ?, ?", start, end).Scan(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
 }
 
-func (UserModel) Exists(userName string, password string) bool {
+func (UserModel) Exists(userName string, password string) (bool, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var user entities.User
-	db.Where("user_name=? AND password=?", userName, password).Find(&user)
-	return user.UserId != 0
+	result := db.Where("user_name=? AND password=?", userName, password).Find(&user)
+	if result.Error != nil {
+		return false, result.Error
+	}
+	return user.UserId != 0, nil
 }
 
-func (UserModel) ExistsActive(userName string, password string) bool {
+func (UserModel) ExistsActive(userName string, password string) (bool, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var user entities.User
-	db.Where("user_name=? AND password=? AND active='Yes'", userName, password).Find(&user)
-	return user.UserId != 0
+	result := db.Where("user_name=? AND password=? AND active='Yes'", userName, password).Find(&user)
+	if result.Error != nil {
+		return false, result.Error
+	}
+	return user.UserId != 0, nil
 }
 
-func (UserModel) ExistsActiveUser(userName string) bool {
+func (UserModel) ExistsActiveUser(userName string) (bool, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var user entities.User
-	db.Where("user_name=? AND active='Yes'", userName).Find(&user)
-	return user.UserId != 0
+	result := db.Where("user_name=? AND active='Yes'", userName).Find(&user)
+	if result.Error != nil {
+		return false, result.Error
+	}
+	return user.UserId != 0, nil
 }
 
-func (UserModel) GetByUserNameAndPassword(userName string, password string) entities.UserData {
+func (UserModel) GetByUserNameAndPassword(userName string, password string) (entities.UserData, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var userData entities.UserData
-	db.Raw("SELECT * FROM view_user_data WHERE user_name=? AND password=?", userName, password).Scan(&userData)
-	return userData
+	result := db.Raw("SELECT * FROM view_user_data WHERE user_name=? AND password=?", userName, password).Scan(&userData)
+	if result.Error != nil {
+		return entities.UserData{}, result.Error
+	}
+	return userData, nil
 }
 
-func (UserModel) GetByUserName(userName string) entities.UserData {
+func (UserModel) GetByUserName(userName string) (entities.UserData, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var userData entities.UserData
-	db.Raw("SELECT * FROM view_user_data WHERE user_name=?", userName).Scan(&userData)
-	return userData
+	result := db.Raw("SELECT * FROM view_user_data WHERE user_name=?", userName).Scan(&userData)
+	if result.Error != nil {
+		return entities.UserData{}, result.Error
+	}
+	return userData, nil
 }
 
-func (UserModel) FindAllByStatus(statusName string) []entities.UserData {
+func (UserModel) FindAllByStatus(statusName string) ([]entities.UserData, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	users := []entities.UserData{}
-	db.Raw("SELECT * FROM view_user_data WHERE active=?",  statusName).Find(&users)
-	return users
+	result := db.Raw("SELECT * FROM view_user_data WHERE active=?",  statusName).Find(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
 }
 
-func (UserModel) FindAllByRole(roleName string) []entities.UserData {
+func (UserModel) FindAllByRole(roleName string) ([]entities.UserData, error) {
+	db, _ := config.ConnectDB()
+	defer config.DisconnectDB(db)
+	var users []entities.UserData
+	result := db.Raw("SELECT * FROM view_user_data WHERE role_name=?",  roleName).Find(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
+}
+
+func (UserModel) FindInactiveByRole(roleName string) ([]entities.UserData, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	users := []entities.UserData{}
-	db.Raw("SELECT * FROM view_user_data WHERE role_name=?",  roleName).Find(&users)
-	return users
-}
-
-func (UserModel) FindInactiveByRole(roleName string) []entities.UserData {
-	db, _ := config.ConnectDB()
-	defer config.DisconnectDB(db)
-	users := []entities.UserData{}
-	db.Raw("SELECT * FROM view_user_data WHERE role_name=? and active='No'",  roleName).Find(&users)
-	return users
+	result := db.Raw("SELECT * FROM view_user_data WHERE role_name=? and active='No'",  roleName).Find(&users)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return users, nil
 }

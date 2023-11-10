@@ -10,46 +10,66 @@ type RoleModel struct {
 }
 
 
-func (RoleModel) Create(role entities.Role) *gorm.DB {
+func (RoleModel) Create(role entities.Role) (*gorm.DB, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
-	return db.Create(&role)
+	result := db.Create(&role)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return result, nil
 }
 
-func (RoleModel) FindAll() []entities.Role {
+func (RoleModel) FindAll() ([]entities.Role, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
-	roles := []entities.Role{}
-	db.Find(&roles)
-	return roles
+	var roles []entities.Role
+	result := db.Find(&roles)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return roles, nil
 }
 
-func (RoleModel) Update(role entities.Role) *gorm.DB {
+func (RoleModel) Update(role entities.Role) (*gorm.DB, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
-	return db.Save(&role)
+	result := db.Save(&role)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return result, nil
 }
 
-func (RoleModel) FindById(id int) entities.Role {
+func (RoleModel) FindById(id int) (entities.Role, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var role entities.Role
-	db.First(&role, id)
-	return role
+	result := db.First(&role, id)
+	if result.Error != nil {
+		return entities.Role{}, result.Error
+	}
+	return role, nil
 }
 
-func (RoleModel) FindByName(name string) entities.Role {
+func (RoleModel) FindByName(name string) (entities.Role, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var role entities.Role
-	db.Where("role_name=?", name).First(&role)
-	return role
+	result := db.Where("role_name=?", name).First(&role)
+	if result.Error != nil {
+		return entities.Role{}, result.Error
+	}
+	return role, nil
 }
 
-func (RoleModel) Count() int64 {
+func (RoleModel) Count() (int64, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
 	var count int64
-	db.Table("roles").Count(&count)
-	return count
+	result := db.Table("roles").Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return count, nil
 }

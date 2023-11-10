@@ -29,6 +29,8 @@ func NewLogger(logFileName string) *zap.Logger {
 	return logger
 }
 
+
+
 func LogRequestPath(ctx *fiber.Ctx) zap.Field {
 	return zap.String("path", ctx.Path())
 }

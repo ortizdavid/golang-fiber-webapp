@@ -35,10 +35,11 @@ func (AuthController) login(ctx *fiber.Ctx) error {
 	var userModel models.UserModel
 	userName := ctx.FormValue("username")
 	password := ctx.FormValue("password")
-	user := userModel.FindByUserName(userName)
+	user, _ := userModel.FindByUserName(userName)
+	userExists, _ := userModel.ExistsActiveUser(userName)
 	hashedPassword := user.Password
 	
-	if userModel.ExistsActiveUser(userName) && helpers.CheckPassword(hashedPassword, password) {
+	if userExists && helpers.CheckPassword(hashedPassword, password) {
 		store := config.GetSessionStore()
 		session, _ := store.Get(ctx)
 		session.Set("username", userName)
@@ -75,7 +76,7 @@ func (AuthController) getRecoveryLinkForm(ctx *fiber.Ctx) error {
 func (AuthController) getRecoveryLink(ctx *fiber.Ctx) error {
 	email := ctx.FormValue("email")
 	var userModel models.UserModel
-	user := userModel.FindByUserName(email)
+	user, _ := userModel.FindByUserName(email)
 	
 	emailService := config.DefaultEmailService()
 	recoverLink := fmt.Sprintf("http://%s/auth/recover-password/%s", config.ListenAddr(), user.Token)
@@ -98,7 +99,7 @@ func (AuthController) getRecoveryLink(ctx *fiber.Ctx) error {
 
 func (AuthController) recoverPasswordForm(ctx *fiber.Ctx) error {
 	token := ctx.Params("token")
-	user := models.UserModel{}.FindByToken(token)
+	user, _ := models.UserModel{}.FindByToken(token)
 	return ctx.Render("auth/recover-password", fiber.Map{
 		"Title": "Password Recovery",
 		"User": user,
@@ -111,7 +112,7 @@ func (AuthController) recoverPassword(ctx *fiber.Ctx) error {
 	token := ctx.Params("token")
 
 	var userModel models.UserModel
-	user := userModel.FindByToken(token)
+	user, _ := userModel.FindByToken(token)
 	user.Password = helpers.HashPassword(password)
 	user.Token = helpers.GenerateRandomToken()
 	userModel.Update(user)

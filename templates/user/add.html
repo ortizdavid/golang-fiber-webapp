@@ -1,5 +1,11 @@
 {{ template "partials/header-back" . }}
 
+    {{if .flash}}
+        <div class="flash-message">
+            {{.flash}}
+        </div>
+    {{end}}
+
     <div class="">
         <form class="" action="/users/add" method="POST">
             <div class="field">

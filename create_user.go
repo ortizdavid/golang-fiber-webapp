@@ -26,7 +26,8 @@ func main() {
 	if roleId < 1 || roleId > 2 {
 		roleId = 1
 	}
-	roleName = roleModel.FindById(roleId).RoleName
+	role, _ := roleModel.FindById(roleId)
+	roleName = role.RoleName
 
 	user := entities.User{
 		UserId:    0,
