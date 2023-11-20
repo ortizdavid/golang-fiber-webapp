@@ -61,3 +61,29 @@
 {"level":"error","ts":"2023-11-10T14:18:57.472+0100","msg":"Authentication failed at: /image/golang-logo.png"}
 {"level":"info","ts":"2023-11-10T14:23:46.759+0100","msg":"User 'ortizaad1994@gmail.com' authenticated sucessfully!"}
 {"level":"info","ts":"2023-11-10T14:23:52.246+0100","msg":"User 'ortizaad1994@gmail.com' logged out"}
+{"level":"error","ts":"2023-11-20T14:28:25.058+0100","msg":"Authentication failed at: /favicon.ico"}
+{"level":"info","ts":"2023-11-20T14:28:32.667+0100","msg":"User 'ortizaad1994@gmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-20T14:29:02.517+0100","msg":"User 'ortizaad1994@gmail.com' logged out"}
+{"level":"info","ts":"2023-11-20T14:30:26.900+0100","msg":"User 'normalgmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-20T14:36:49.653+0100","msg":"User 'normalgmail.com' logged out"}
+{"level":"error","ts":"2023-11-20T14:37:13.125+0100","msg":"User 'normal@gmail.com' failed to login"}
+{"level":"error","ts":"2023-11-20T14:37:25.853+0100","msg":"User 'normal@gmail.com' failed to login"}
+{"level":"error","ts":"2023-11-20T14:37:37.357+0100","msg":"User 'normal@user.com' failed to login"}
+{"level":"info","ts":"2023-11-20T14:37:53.840+0100","msg":"User 'normalgmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-20T14:46:38.409+0100","msg":"User 'normalgmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-20T14:48:12.509+0100","msg":"User 'normalgmail.com' logged out"}
+{"level":"info","ts":"2023-11-20T14:48:18.517+0100","msg":"User 'ortizaad1994@gmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-20T14:48:58.616+0100","msg":"User 'ortizaad1994@gmail.com' logged out"}
+{"level":"info","ts":"2023-11-20T14:49:06.981+0100","msg":"User 'test@user.com' authenticated sucessfully!"}
+{"level":"error","ts":"2023-11-20T14:54:19.313+0100","msg":"Authentication failed at: /tasks/my-tasks"}
+{"level":"info","ts":"2023-11-20T14:54:34.589+0100","msg":"User 'admin@gmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-20T14:57:34.862+0100","msg":"User 'admin@gmail.com' logged out"}
+{"level":"info","ts":"2023-11-20T14:57:50.334+0100","msg":"User 'normal@gmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-20T14:58:09.209+0100","msg":"User 'normal@gmail.com' logged out"}
+{"level":"info","ts":"2023-11-20T14:58:20.277+0100","msg":"User 'admin@gmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-20T14:58:44.791+0100","msg":"User 'admin@gmail.com' logged out"}
+{"level":"info","ts":"2023-11-20T14:58:53.322+0100","msg":"User 'normal@gmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-20T14:59:13.394+0100","msg":"User 'normal@gmail.com' logged out"}
+{"level":"info","ts":"2023-11-20T14:59:21.166+0100","msg":"User 'admin@gmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-20T14:59:53.504+0100","msg":"User 'admin@gmail.com' logged out"}
+{"level":"info","ts":"2023-11-20T15:00:03.034+0100","msg":"User 'test@user.com' authenticated sucessfully!"}

@@ -1,0 +1,18 @@
+{{ template "partials/header-back" . }}
+
+    <div class="">
+        <form class="" action="/tasks/upload-csv" method="POST" enctype="multipart/form-data">
+            
+            <div class="field">
+                <label for=""><strong>CSV File:</strong></label>
+                <input type="file" class="form-control" name="csv_file" required id="">
+            </div>
+            <br>
+            <div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/tasks" class="btn btn-danger">Cancel</a>
+            </div>
+        </form>
+    </div>
+    
+{{ template "partials/footer-back" . }}

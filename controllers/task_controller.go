@@ -1,8 +1,11 @@
 package controllers
 
 import (
+	"encoding/csv"
 	"fmt"
+	"io"
 	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/ortizdavid/golang-fiber-webapp/config"
 	"github.com/ortizdavid/golang-fiber-webapp/entities"
@@ -29,7 +32,10 @@ func (task TaskController) RegisterRoutes(router *fiber.App) {
 	group.Get("/:id/add-attachment", task.addAttachmentForm)
 	group.Post("/:id/add-attachment", task.addAttachment)
 	group.Get("/:id/view-attachment", task.viewAttachment)
+	group.Get("/upload-csv", task.uploadCSVForm)
+	group.Post("/upload-csv", task.uploadCSV)
 }
+
 
 func (TaskController) index(ctx *fiber.Ctx) error {
 	
@@ -75,6 +81,7 @@ func (TaskController) index(ctx *fiber.Ctx) error {
 	})
 }
 
+
 func (TaskController) details(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	task, _ := models.TaskModel{}.GetDataByUniqueId(id)
@@ -84,6 +91,7 @@ func (TaskController) details(ctx *fiber.Ctx) error {
 		"LoggedUser": GetLoggedUser(ctx),
 	})
 }
+
 
 func (TaskController) addForm(ctx *fiber.Ctx) error {
 	complexities, _ := models.TaskComplexityModel{}.FindAll()
@@ -95,6 +103,7 @@ func (TaskController) addForm(ctx *fiber.Ctx) error {
 		"LoggedUser": GetLoggedUser(ctx),
 	})
 }
+
 
 func (TaskController) add(ctx *fiber.Ctx) error {
 	loggedUser := GetLoggedUser(ctx)
@@ -141,6 +150,7 @@ func (TaskController) editForm(ctx *fiber.Ctx) error {
 	})
 }
 
+
 func (TaskController) edit(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	taskName := ctx.FormValue("task_name")
@@ -164,12 +174,14 @@ func (TaskController) edit(ctx *fiber.Ctx) error {
 	return ctx.Redirect(fmt.Sprintf("/tasks/%s/details", id))
 }
 
+
 func (TaskController) searchForm(ctx *fiber.Ctx) error {
 	return ctx.Render("task/search", fiber.Map{
 		"Title": "Search Tasks",
 		"LoggedUser": GetLoggedUser(ctx),
 	})
 }
+
 
 func (TaskController) search(ctx *fiber.Ctx) error {
 	param := ctx.FormValue("search_param")
@@ -186,6 +198,7 @@ func (TaskController) search(ctx *fiber.Ctx) error {
 	})
 }
 
+
 func (TaskController) addAttachmentForm(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	task, _ := models.TaskModel{}.FindByUniqueId(id)
@@ -195,6 +208,7 @@ func (TaskController) addAttachmentForm(ctx *fiber.Ctx) error {
 		"LoggedUser": GetLoggedUser(ctx),
 	})
 }
+
 
 func (TaskController) addAttachment(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
@@ -215,4 +229,68 @@ func (TaskController) viewAttachment(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	task, _ := models.TaskModel{}.FindByUniqueId(id)
 	return ctx.SendFile("./static/uploads/docs/"+task.Attachment)
+}
+
+
+func (TaskController) uploadCSVForm(ctx *fiber.Ctx) error {
+	return ctx.Render("task/upload-csv", fiber.Map{
+		"Title": "Upload CSV Tasks",
+		"LoggedUser": GetLoggedUser(ctx),
+	})
+}
+
+
+func (TaskController) uploadCSV(ctx *fiber.Ctx) error {
+	loggedUser := GetLoggedUser(ctx)
+	file, err := ctx.FormFile("csv_file")
+	
+	var taskModel models.TaskModel
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+
+	src, err := file.Open()
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+	defer src.Close()
+
+	reader := csv.NewReader(src)
+	
+
+	for {
+		record, err := reader.Read()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			return ctx.Status(500).SendString(err.Error())
+		}
+
+		if len(record) != 6 {
+			return fmt.Errorf("invalid CSV record: %v", record)
+		}
+
+		task := entities.Task{
+			TaskId:       0,
+			UserId:       loggedUser.UserId,
+			StatusId:     helpers.ConvertToInt(record[0]),
+			ComplexityId: helpers.ConvertToInt(record[1]),
+			TaskName:     record[2],
+			StartDate:    helpers.StringToDate(record[3]),
+			EndDate:      helpers.StringToDate(record[4]),
+			Description:  record[5],
+			Attachment:   "",
+			UniqueId:     helpers.GenerateUUID(),
+			CreatedAt:    time.Now(),
+			UpdatedAt:    time.Now(),
+		}
+		_, err = taskModel.Create(task)
+		if err != nil {
+			return ctx.Status(500).SendString(err.Error())
+		}
+		fmt.Println(record)
+		fmt.Println(task)
+	}
+
+	return ctx.Redirect("/tasks")
 }
