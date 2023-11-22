@@ -102,3 +102,6 @@
 {"level":"info","ts":"2023-11-22T10:36:36.101+0100","msg":"User 'admin@gmail.com' authenticated sucessfully!"}
 {"level":"info","ts":"2023-11-22T11:03:43.110+0100","msg":"User 'admin@gmail.com' logged out"}
 {"level":"info","ts":"2023-11-22T11:03:59.208+0100","msg":"User 'normal@gmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-22T11:48:46.667+0100","msg":"User 'normal@gmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2023-11-22T11:49:01.396+0100","msg":"User 'normal@gmail.com' logged out"}
+{"level":"info","ts":"2023-11-22T11:49:08.384+0100","msg":"User 'test@user.com' authenticated sucessfully!"}

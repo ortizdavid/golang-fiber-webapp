@@ -255,7 +255,6 @@ func (TaskController) uploadCSV(ctx *fiber.Ctx) error {
 	defer src.Close()
 
 	reader := csv.NewReader(src)
-
 	if err := models.SkipCSVHeader(reader); err != nil {
 		return ctx.Status(500).SendString(err.Error())
 	}
@@ -270,5 +269,6 @@ func (TaskController) uploadCSV(ctx *fiber.Ctx) error {
 		return ctx.Status(500).SendString(err.Error())
 	}
 
+	loggerTask.Info(fmt.Sprintf("User '%s' Uploaded Task from CSV File '%s'", loggedUser.UserName, file.Filename))
 	return ctx.Redirect("/tasks")
 }

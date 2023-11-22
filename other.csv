@@ -1,0 +1,8 @@
+status_id,complexity_id,task_name,start_date,end_date,description
+1,2,Upload Code to Github,2023-01-01,2023-02-04,Uploading code on Github
+2,1,Fix Bugs in Backend,2023-02-05,2023-02-15,Resolve backend issues
+3,3,Design UI for Dashboard,2023-02-16,2023-03-01,Create user-friendly UI
+4,2,Optimize Database Queries,2023-03-02,2023-03-15,Improve database performance
+5,1,Implement User Authentication,2023-03-16,2023-03-29,Add secure login functionality
+5,3,Write API Documentation,2023-04-01,2023-04-15,Document API endpoints
+5,2,Refactor Codebase,2023-04-16,2023-04-30,Improve code structure

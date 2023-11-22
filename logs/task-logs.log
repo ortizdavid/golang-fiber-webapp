@@ -6,3 +6,5 @@
 {"level":"info","ts":"2023-11-22T08:05:21.285+0100","msg":"User 'normal@gmail.com' added Task 'Testing App'"}
 {"level":"info","ts":"2023-11-22T08:20:04.019+0100","msg":"User 'normal@gmail.com' added Task 'Testing App'"}
 {"level":"info","ts":"2023-11-22T11:05:04.833+0100","msg":"User 'normal@gmail.com' added Task 'Testing App'"}
+{"level":"info","ts":"2023-11-22T11:49:45.038+0100","msg":"User 'test@user.com' added Task 'Writing Docs'"}
+{"level":"info","ts":"2023-11-22T12:21:32.830+0100","msg":"User 'test@user.com' Uploaded Task from CSV File 'tasks_for_upload.csv'"}
