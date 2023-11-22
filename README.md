@@ -4,7 +4,7 @@
 - [x] Create Users
 - [x] Upload User image
 - [x] Add Tasks
-- [ ] Upload Tasks from CSV File
+- [x] Upload Tasks from CSV File
 - [x] Add Task Attachment
 - [x] Search Users and Tasks
 - [x] Reports (PDF)

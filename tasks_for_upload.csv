@@ -1,0 +1,31 @@
+status_id,complexity_id,task_name,start_date,end_date,description
+1,2,Upload Code to Github,2023-01-01,2023-02-04,Uploading code on Github
+2,1,Fix Bugs in Backend,2023-02-05,2023-02-15,Resolve backend issues
+3,3,Design UI for Dashboard,2023-02-16,2023-03-01,Create user-friendly UI
+4,2,Optimize Database Queries,2023-03-02,2023-03-15,Improve database performance
+5,1,Implement User Authentication,2023-03-16,2023-03-29,Add secure login functionality
+5,3,Write API Documentation,2023-04-01,2023-04-15,Document API endpoints
+5,2,Refactor Codebase,2023-04-16,2023-04-30,Improve code structure
+1,1,Unit Testing,2023-05-01,2023-05-10,Write and run unit tests
+4,3,Integrate Payment Gateway,2023-05-11,2023-05-25,Add payment functionality
+1,2,Create Admin Panel,2023-05-26,2023-06-10,Develop admin dashboard
+1,1,Optimize Frontend Performance,2023-06-11,2023-06-25,Improve webpage loading speed
+2,3,Implement Notifications,2023-06-26,2023-07-10,Add push notifications
+3,2,Upgrade Third-Party Libraries,2023-07-11,2023-07-25,Keep dependencies up-to-date
+4,1,Code Review,2023-07-26,2023-08-05,Review and improve code quality
+5,3,Develop Mobile App,2023-08-06,2023-08-20,Build mobile application
+5,2,Create User Guides,2023-08-21,2023-09-05,Prepare user documentation
+2,1,Implement Search Functionality,2023-09-06,2023-09-20,Add search feature to the app
+2,3,Perform Security Audit,2023-09-21,2023-10-05,Conduct security assessment
+2,2,Setup Continuous Integration,2023-10-06,2023-10-20,Implement CI/CD pipeline
+3,1,Release v1.0,2023-10-21,2023-11-01,Official product release
+1,2,Optimize API Endpoints,2023-11-02,2023-11-15,Improve efficiency of API calls
+2,1,Fix Cross-Browser Compatibility,2023-11-16,2023-11-30,Ensure app works on all browsers
+3,3,Conduct User Feedback Session,2023-12-01,2023-12-15,Gather feedback for product improvement
+3,2,Update Documentation for New Features,2023-12-16,2023-12-29,Keep documentation current
+5,1,Enhance Error Handling,2023-01-01,2023-01-15,Improve error messages and handling
+3,3,Localization for Multiple Languages,2023-01-16,2023-01-29,Implement language support
+5,2,Performance Monitoring Setup,2023-02-01,2023-02-15,Integrate monitoring tools
+1,1,Implement Two-Factor Authentication,2023-02-16,2023-02-28,Enhance security with 2FA
+1,3,Upgrade Frontend Framework,2023-03-01,2023-03-15,Migrate to the latest frontend framework
+1,2,Database Backup and Recovery,2023-03-16,2023-03-27,Implement robust backup system

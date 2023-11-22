@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/csv"
 	"fmt"
-	"io"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -121,8 +120,8 @@ func (TaskController) add(ctx *fiber.Ctx) error {
 		StatusId:     helpers.ConvertToInt(statusId),
 		ComplexityId: helpers.ConvertToInt(complexityId),
 		TaskName:     taskName,
-		StartDate:    helpers.StringToDate(startDate),
-		EndDate:      helpers.StringToDate(endDate),
+		StartDate:    startDate,
+		EndDate:      endDate,
 		Description:  description,
 		Attachment:   "",
 		UniqueId:     helpers.GenerateUUID(),
@@ -166,8 +165,8 @@ func (TaskController) edit(ctx *fiber.Ctx) error {
 	task.StatusId = helpers.ConvertToInt(statusId)
 	task.ComplexityId = helpers.ConvertToInt(complexityId)
 	task.Description = description
-	task.StartDate = helpers.StringToDate(startDate)
-	task.EndDate = helpers.StringToDate(endDate)
+	task.StartDate = startDate
+	task.EndDate = endDate
 	task.UpdatedAt = time.Now()
 	taskModel.Update(task)
 	loggerTask.Info(fmt.Sprintf("Task '%s' Added ", taskName))
@@ -234,17 +233,17 @@ func (TaskController) viewAttachment(ctx *fiber.Ctx) error {
 
 func (TaskController) uploadCSVForm(ctx *fiber.Ctx) error {
 	return ctx.Render("task/upload-csv", fiber.Map{
-		"Title": "Upload CSV Tasks",
+		"Title": "Upload Tasks from CSV file",
 		"LoggedUser": GetLoggedUser(ctx),
 	})
 }
 
 
 func (TaskController) uploadCSV(ctx *fiber.Ctx) error {
-	loggedUser := GetLoggedUser(ctx)
-	file, err := ctx.FormFile("csv_file")
-	
 	var taskModel models.TaskModel
+	loggedUser := GetLoggedUser(ctx)
+
+	file, err := ctx.FormFile("csv_file")
 	if err != nil {
 		return ctx.Status(500).SendString(err.Error())
 	}
@@ -256,40 +255,19 @@ func (TaskController) uploadCSV(ctx *fiber.Ctx) error {
 	defer src.Close()
 
 	reader := csv.NewReader(src)
-	
 
-	for {
-		record, err := reader.Read()
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			return ctx.Status(500).SendString(err.Error())
-		}
+	if err := models.SkipCSVHeader(reader); err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 
-		if len(record) != 6 {
-			return fmt.Errorf("invalid CSV record: %v", record)
-		}
+	tasksFromCSV, err := models.ParseTaskFromCSV(reader, loggedUser.UserId) // Parsing CSV
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 
-		task := entities.Task{
-			TaskId:       0,
-			UserId:       loggedUser.UserId,
-			StatusId:     helpers.ConvertToInt(record[0]),
-			ComplexityId: helpers.ConvertToInt(record[1]),
-			TaskName:     record[2],
-			StartDate:    helpers.StringToDate(record[3]),
-			EndDate:      helpers.StringToDate(record[4]),
-			Description:  record[5],
-			Attachment:   "",
-			UniqueId:     helpers.GenerateUUID(),
-			CreatedAt:    time.Now(),
-			UpdatedAt:    time.Now(),
-		}
-		_, err = taskModel.Create(task)
-		if err != nil {
-			return ctx.Status(500).SendString(err.Error())
-		}
-		fmt.Println(record)
-		fmt.Println(task)
+	_, err = taskModel.CreateBatch(tasksFromCSV) // Inserting Batch
+	if  err != nil {
+		return ctx.Status(500).SendString(err.Error())
 	}
 
 	return ctx.Redirect("/tasks")

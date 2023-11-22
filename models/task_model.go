@@ -21,6 +21,16 @@ func (taskModel *TaskModel) Create(task entities.Task) (*gorm.DB, error) {
 	return result, nil
 }
 
+func (taskModel *TaskModel) CreateBatch(tasks []entities.Task) (*gorm.DB, error) {
+	db, _ := config.ConnectDB()
+	defer config.DisconnectDB(db)
+	result := db.Create(&tasks)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return result, nil
+}
+
 func (TaskModel) FindAll() ([]entities.Task, error) {
 	db, _ := config.ConnectDB()
 	defer config.DisconnectDB(db)
