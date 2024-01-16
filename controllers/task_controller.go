@@ -53,7 +53,7 @@ func (TaskController) index(ctx *fiber.Ctx) error {
 	totalPages := pagination.CalculateTotalPages(count, itemsPerPage)
 
 	if pageNumber > totalPages {
-		return ctx.Render("error/pagination", fiber.Map{
+		return ctx.Status(500).Render("error/pagination", fiber.Map{
 			"Title": "Tasks",
 			"TotalPages": totalPages, 
 			"LoggedUser": loggedUser,
@@ -128,7 +128,10 @@ func (TaskController) add(ctx *fiber.Ctx) error {
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}
-	taskModel.Create(task)
+	_, err := taskModel.Create(task)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 	loggerTask.Info(fmt.Sprintf("User '%s' added Task '%s'", loggedUser.UserName, taskName))
 	return ctx.Redirect("/tasks")
 }
@@ -168,7 +171,10 @@ func (TaskController) edit(ctx *fiber.Ctx) error {
 	task.StartDate = startDate
 	task.EndDate = endDate
 	task.UpdatedAt = time.Now()
-	taskModel.Update(task)
+	_, err := taskModel.Update(task)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 	loggerTask.Info(fmt.Sprintf("Task '%s' Added ", taskName))
 	return ctx.Redirect(fmt.Sprintf("/tasks/%s/details", id))
 }
@@ -184,7 +190,10 @@ func (TaskController) searchForm(ctx *fiber.Ctx) error {
 
 func (TaskController) search(ctx *fiber.Ctx) error {
 	param := ctx.FormValue("search_param")
-	results, _ := models.TaskModel{}.Search(param)
+	results, err := models.TaskModel{}.Search(param)
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
 	count := len(results)
 	loggedUser := GetLoggedUser(ctx)
 	loggerTask.Info(fmt.Sprintf("User '%s' Searched for Task '%v' and Found %d results", loggedUser.UserName, param, count))
@@ -215,7 +224,10 @@ func (TaskController) addAttachment(ctx *fiber.Ctx) error {
 	loggedUser := GetLoggedUser(ctx)
 
 	var taskModel models.TaskModel
-	task, _ := taskModel.FindByUniqueId(id)
+	task, err := taskModel.FindByUniqueId(id)
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
 	task.Attachment = attachment
 	task.UpdatedAt = time.Now()
 	taskModel.Update(task)
@@ -226,7 +238,10 @@ func (TaskController) addAttachment(ctx *fiber.Ctx) error {
 
 func (TaskController) viewAttachment(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
-	task, _ := models.TaskModel{}.FindByUniqueId(id)
+	task, err := models.TaskModel{}.FindByUniqueId(id)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 	return ctx.SendFile("./static/uploads/docs/"+task.Attachment)
 }
 

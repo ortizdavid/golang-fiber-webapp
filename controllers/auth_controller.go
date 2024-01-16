@@ -51,7 +51,7 @@ func (AuthController) login(ctx *fiber.Ctx) error {
 		return ctx.Redirect("/home")
 	} else {
 		loggerAuth.Error(fmt.Sprintf("User '%s' failed to login", userName))
-		return ctx.Redirect("/auth/login")
+		return ctx.Status(401).Redirect("/auth/login")
 	}
 }
 
@@ -59,8 +59,14 @@ func (AuthController) login(ctx *fiber.Ctx) error {
 func (AuthController) logout(ctx *fiber.Ctx) error {
 	loggedUser := GetLoggedUser(ctx)
 	store := config.GetSessionStore()
-	session, _ := store.Get(ctx)
-	session.Destroy()
+	session, err := store.Get(ctx)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
+	err = session.Destroy()
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 	loggerAuth.Info(fmt.Sprintf("User '%s' logged out", loggedUser.UserName))
 	return ctx.Redirect("/auth/login")
 }
@@ -74,9 +80,13 @@ func (AuthController) getRecoveryLinkForm(ctx *fiber.Ctx) error {
 
 
 func (AuthController) getRecoveryLink(ctx *fiber.Ctx) error {
-	email := ctx.FormValue("email")
 	var userModel models.UserModel
-	user, _ := userModel.FindByUserName(email)
+	email := ctx.FormValue("email")
+	user, err := userModel.FindByUserName(email)
+
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
 	
 	emailService := config.DefaultEmailService()
 	recoverLink := fmt.Sprintf("http://%s/auth/recover-password/%s", config.ListenAddr(), user.Token)
@@ -88,7 +98,7 @@ func (AuthController) getRecoveryLink(ctx *fiber.Ctx) error {
 				<p>click on the link below <br> <a href="`+recoverLink+`">`+recoverLink+`</a></p>
 			</body>
 		</html>`
-	err := emailService.SendHTMLEmail(email, "Password Recovery", htmlBody)
+	err = emailService.SendHTMLEmail(email, "Password Recovery", htmlBody)
 	if err != nil {
 		fmt.Println("Error sending HTML email:", err)
 	}
@@ -99,7 +109,11 @@ func (AuthController) getRecoveryLink(ctx *fiber.Ctx) error {
 
 func (AuthController) recoverPasswordForm(ctx *fiber.Ctx) error {
 	token := ctx.Params("token")
-	user, _ := models.UserModel{}.FindByToken(token)
+	user, err := models.UserModel{}.FindByToken(token)
+
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
 	return ctx.Render("auth/recover-password", fiber.Map{
 		"Title": "Password Recovery",
 		"User": user,
@@ -108,11 +122,15 @@ func (AuthController) recoverPasswordForm(ctx *fiber.Ctx) error {
 
 
 func (AuthController) recoverPassword(ctx *fiber.Ctx) error {
+	var userModel models.UserModel
 	password := ctx.FormValue("password")
 	token := ctx.Params("token")
 
-	var userModel models.UserModel
-	user, _ := userModel.FindByToken(token)
+	user, err := userModel.FindByToken(token)
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
+
 	user.Password = helpers.HashPassword(password)
 	user.Token = helpers.GenerateRandomToken()
 	userModel.Update(user)
@@ -127,7 +145,7 @@ func (AuthController) recoverPassword(ctx *fiber.Ctx) error {
 				<p>New password is: <b>`+password+`</b></p>
 			</body>
 		</html>`
-	err := emailService.SendHTMLEmail(user.UserName, "New Password", htmlBody)
+	err = emailService.SendHTMLEmail(user.UserName, "New Password", htmlBody)
 	if err != nil {
 		fmt.Println("Error sending HTML email:", err)
 	}

@@ -54,7 +54,7 @@ func (UserController) index(ctx *fiber.Ctx) error {
 	totalPages := pagination.CalculateTotalPages(count, itemsPerPage)
 
 	if pageNumber > totalPages {
-		return ctx.Render("error/pagination", fiber.Map{
+		return ctx.Status(500).Render("error/pagination", fiber.Map{
 			"Title": "Tasks",
 			"TotalPages": totalPages, 
 			"LoggedUser": loggedUser,
@@ -73,7 +73,10 @@ func (UserController) index(ctx *fiber.Ctx) error {
 
 func (UserController) details(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
-	user, _ := models.UserModel{}.GetDataByUniqueId(id)
+	user, err := models.UserModel{}.GetDataByUniqueId(id)
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
 	return ctx.Render("user/details", fiber.Map{
 		"Title": "User Details",
 		"User": user,
@@ -82,7 +85,10 @@ func (UserController) details(ctx *fiber.Ctx) error {
 }
 
 func (UserController) addForm(ctx *fiber.Ctx) error {
-	roles, _ := models.RoleModel{}.FindAll()
+	roles, err := models.RoleModel{}.FindAll()
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
 	return ctx.Render("user/add", fiber.Map{
 		"Title": "Add User",
 		"Roles": roles,
@@ -108,7 +114,10 @@ func (UserController) add(ctx *fiber.Ctx) error {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	userModel.Create(user)
+	_, err := userModel.Create(user)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 	loggerUser.Info(fmt.Sprintf("User '%s' added successfully", userName))
 	return ctx.Redirect("/users")
 }
@@ -133,7 +142,10 @@ func (UserController) edit(ctx *fiber.Ctx) error {
 	user.RoleId = helpers.ConvertToInt(roleId)
 	user.UpdatedAt = time.Now()
 	user.Token = helpers.GenerateRandomToken()
-	userModel.Update(user)
+	_, err := userModel.Update(user)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 	loggerUser.Info(fmt.Sprintf("User '%s' Updated successfully", user.UserName))
 	return ctx.Redirect("/users")
 }
@@ -148,7 +160,10 @@ func (UserController) searchForm(ctx *fiber.Ctx) error {
 
 func (UserController) search(ctx *fiber.Ctx) error {
 	param := ctx.FormValue("search_param")
-	results, _ := models.UserModel{}.Search(param)
+	results, err := models.UserModel{}.Search(param)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 	count := len(results)
 	loggedUser := GetLoggedUser(ctx)
 	loggerUser.Info(fmt.Sprintf("User '%s' Searched for User '%v' and Found %d results", loggedUser.UserName, param, count))
@@ -163,7 +178,10 @@ func (UserController) search(ctx *fiber.Ctx) error {
 
 func (UserController) deactivateForm(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
-	user, _ := models.UserModel{}.GetDataByUniqueId(id)
+	user, err := models.UserModel{}.GetDataByUniqueId(id)
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
 	return ctx.Render("user/deactivate", fiber.Map{
 		"Title": "Deactivate User",
 		"User": user,
@@ -174,7 +192,10 @@ func (UserController) deactivateForm(ctx *fiber.Ctx) error {
 func (UserController) deactivate(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	var userModel models.UserModel
-	user, _ := userModel.FindByUniqueId(id)
+	user, err := userModel.FindByUniqueId(id)
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
 	user.Active = "No"
 	user.UpdatedAt = time.Now()
 	userModel.Update(user)
@@ -195,7 +216,10 @@ func (UserController) activateForm(ctx *fiber.Ctx) error {
 func (UserController) activate(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	var userModel models.UserModel
-	user, _ := userModel.FindByUniqueId(id)
+	user, err := userModel.FindByUniqueId(id)
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
 	user.Active = "Yes"
 	user.UpdatedAt = time.Now()
 	user.Token = helpers.GenerateRandomToken()
@@ -215,7 +239,10 @@ func (UserController) addImage(ctx *fiber.Ctx) error {
 	userImage, _ := helpers.UploadFile(ctx, "user_image", "image", config.UploadImagePath())
 	loggedUser := GetLoggedUser(ctx)
 	var userModel models.UserModel
-	user, _ := userModel.FindById(loggedUser.UserId)
+	user, err := userModel.FindById(loggedUser.UserId)
+	if err != nil {
+		return ctx.Status(404).SendString(err.Error())
+	}
 	user.Image = userImage
 	user.UpdatedAt = time.Now()
 	userModel.Update(user)

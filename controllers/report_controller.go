@@ -57,7 +57,10 @@ func (ReportController) reportHandler(ctx *fiber.Ctx) error {
 		"Count": tableReport.Count,
 	}
 	//----------- Render PDF
-	pdfBytes, _ := pdfGen.GeneratePDF(fmt.Sprintf("templates/reports/%s", templateFile), data)
+	pdfBytes, err := pdfGen.GeneratePDF(fmt.Sprintf("templates/reports/%s", templateFile), data)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 	pdfGen.SetOutput(ctx, pdfBytes, fileName)
 	loggerReport.Info(fmt.Sprintf("User '%s' generated '%s' Report", loggedUser.UserName, tableReport.Title))
 	return nil
@@ -75,7 +78,10 @@ func (ReportController) statisticsReportHandler(ctx *fiber.Ctx) error {
 		"LoggedUser": GetLoggedUser(ctx),
 	}
 	//-----------------------
-	pdfBytes, _ := pdfGen.GeneratePDF(fmt.Sprintf("templates/reports/%s", templateFile), data)
+	pdfBytes, err := pdfGen.GeneratePDF(fmt.Sprintf("templates/reports/%s", templateFile), data)
+	if err != nil {
+		return ctx.Status(500).SendString(err.Error())
+	}
 	pdfGen.SetOutput(ctx, pdfBytes, fileName)
 	loggerReport.Info(fmt.Sprintf("User '%s' generated '%s' Report", loggedUser.UserName, "Statistics"))
 	return nil

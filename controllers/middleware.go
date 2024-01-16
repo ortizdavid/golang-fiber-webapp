@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"strings"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/ortizdavid/golang-fiber-webapp/config"
 	"go.uber.org/zap"
@@ -32,7 +31,7 @@ func AuthenticationMiddleware(ctx *fiber.Ctx) error {
 	}
 	if !IsUserAuthenticated(ctx) {
 		loggerAuth.Error(fmt.Sprintf("Authentication failed at: %s", requestedPath))
-		return ctx.Render("error/authentication", fiber.Map{
+		return ctx.Status(500).Render("error/authentication", fiber.Map{
 			"Title": "Authentication Error",
 		})
 	}

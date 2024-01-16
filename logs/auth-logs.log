@@ -105,3 +105,12 @@
 {"level":"info","ts":"2023-11-22T11:48:46.667+0100","msg":"User 'normal@gmail.com' authenticated sucessfully!"}
 {"level":"info","ts":"2023-11-22T11:49:01.396+0100","msg":"User 'normal@gmail.com' logged out"}
 {"level":"info","ts":"2023-11-22T11:49:08.384+0100","msg":"User 'test@user.com' authenticated sucessfully!"}
+{"level":"error","ts":"2024-01-16T13:06:53.393+0100","msg":"Authentication failed at: /favicon.ico"}
+{"level":"error","ts":"2024-01-16T13:07:04.042+0100","msg":"User 'ortizaad1994@gmail.com' failed to login"}
+{"level":"error","ts":"2024-01-16T13:07:04.105+0100","msg":"Authentication failed at: /favicon.ico"}
+{"level":"error","ts":"2024-01-16T13:07:05.630+0100","msg":"User '' failed to login"}
+{"level":"error","ts":"2024-01-16T13:07:05.676+0100","msg":"Authentication failed at: /favicon.ico"}
+{"level":"info","ts":"2024-01-16T13:07:12.573+0100","msg":"User 'admin@gmail.com' authenticated sucessfully!"}
+{"level":"info","ts":"2024-01-16T13:07:14.555+0100","msg":"User 'admin@gmail.com' logged out"}
+{"level":"error","ts":"2024-01-16T14:11:21.184+0100","msg":"User '' failed to login"}
+{"level":"error","ts":"2024-01-16T14:11:22.427+0100","msg":"User '' failed to login"}
