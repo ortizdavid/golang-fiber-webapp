@@ -1,0 +1,34 @@
+version: '3'
+
+
+services:
+
+  webapp:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+    networks:
+      - mynet
+    environment:
+      - DATABASE_URL=root:@tcp(mysql:3306)/golang_fiber_mvc
+
+  database:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      - MYSQL_DATABASE: ${DB_NAME}
+      - MYSQL_USER: ${DB_USER} 
+      - MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - mynet
+
+  networks:
+    mynet: 
+      driver: bridge
+

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"os"
 	"github.com/ortizdavid/golang-fiber-webapp/helpers"
 )
 
@@ -15,21 +14,17 @@ func DefaultEmailService() *helpers.EmailService {
 }
 
 func MailUser() string {
-	LoadDotEnv()
-	return os.Getenv("MAIL_USER")
+	return GetEnv("MAIL_USER")
 }
 
 func MailPassword() string {
-	LoadDotEnv()
-	return os.Getenv("MAIL_PASSWORD")
+	return GetEnv("MAIL_PASSWORD")
 }
 
 func MailSMTPHost() string {
-	LoadDotEnv()
-	return os.Getenv("MAIL_SMTP_HOST")
+	return GetEnv("MAIL_SMTP_HOST")
 }
 
 func MailSMTPPort() int {
-	LoadDotEnv()
-	return helpers.ConvertToInt(os.Getenv("MAIL_SMTP_PORT"))
+	return helpers.ConvertToInt(GetEnv("MAIL_SMTP_PORT"))
 }

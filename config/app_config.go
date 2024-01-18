@@ -1,7 +1,6 @@
 package config
 
 import (
-	"os"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 	"github.com/ortizdavid/golang-fiber-webapp/helpers"
@@ -17,21 +16,17 @@ func GetTemplateEngine() *html.Engine {
 }
 
 func ListenAddr() string {
-	LoadDotEnv()
-	return os.Getenv("APP_HOST")+":"+os.Getenv("APP_PORT")
+	return GetEnv("APP_HOST")+":"+GetEnv("APP_PORT")
 }
 
 func ItemsPerPage() int {
-	LoadDotEnv()
-	return helpers.ConvertToInt(os.Getenv("APP_ITEMS_PER_PAGE"))
+	return helpers.ConvertToInt(GetEnv("APP_ITEMS_PER_PAGE"))
 }
 
 func UploadImagePath() string {
-	LoadDotEnv()
-	return os.Getenv("UPLOAD_IMAGE_PATH")
+	return GetEnv("UPLOAD_IMAGE_PATH")
 }
 
 func UploadDocumentPath() string {
-	LoadDotEnv()
-	return os.Getenv("UPLOAD_DOCUMENT_PATH")
+	return GetEnv("UPLOAD_DOCUMENT_PATH")
 }

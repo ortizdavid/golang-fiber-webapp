@@ -1,7 +1,6 @@
 package config
 
 import (
-	"os"
 	"time"
 	"github.com/gofiber/storage/mysql"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -21,6 +20,5 @@ func GetSessionStore() *session.Store {
 }
 
 func sessionExpiration() int {
-	LoadDotEnv()
-	return helpers.ConvertToInt(os.Getenv("APP_SESSION_EXPIRATION"))
+	return helpers.ConvertToInt(GetEnv("APP_SESSION_EXPIRATION"))
 }
