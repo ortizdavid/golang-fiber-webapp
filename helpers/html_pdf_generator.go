@@ -7,10 +7,10 @@ import (
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
 )
 
-type HtmlPdfGenenerator struct {
+type HtmlPdfGenerator struct {
 }
 
-func (gen *HtmlPdfGenenerator) GeneratePDF(htmlTemplate string, data map[string]interface{}) ([]byte, error) {
+func (gen *HtmlPdfGenerator) GeneratePDF(htmlTemplate string, data map[string]interface{}) ([]byte, error) {
 	var buf bytes.Buffer
 	// Load HTML template
 	tmpl, err := gen.LoadHtmlTemplate(htmlTemplate)
@@ -49,12 +49,12 @@ func (gen *HtmlPdfGenenerator) GeneratePDF(htmlTemplate string, data map[string]
 	return pdfBytes, nil
 }
 
-func (gen *HtmlPdfGenenerator) LoadHtmlTemplate(filePath string) (*template.Template, error) {
+func (gen *HtmlPdfGenerator) LoadHtmlTemplate(filePath string) (*template.Template, error) {
 	tmpl, err := template.ParseFiles(filePath)
 	return tmpl, err
 }
 
-func (gen *HtmlPdfGenenerator) SetOutput(ctx *fiber.Ctx, pdfBytes []byte, fileName string) error {
+func (gen *HtmlPdfGenerator) SetOutput(ctx *fiber.Ctx, pdfBytes []byte, fileName string) error {
 	ctx.Response().Header.SetContentType("application/pdf")
 	ctx.Response().Header.Set("Content-Disposition", "attachment; fileName=" +fileName)
 	_, err := ctx.Write(pdfBytes)

@@ -23,7 +23,7 @@ func (ReportController) reportHandler(ctx *fiber.Ctx) error {
 	loggedUser := GetLoggedUser(ctx)
 	var report models.ReportModel
 	var tableReport models.TableReport
-	var pdfGen helpers.HtmlPdfGenenerator
+	var pdfGen helpers.HtmlPdfGenerator
 
 	switch param {
 	case "users":
@@ -68,7 +68,7 @@ func (ReportController) reportHandler(ctx *fiber.Ctx) error {
 
 func (ReportController) statisticsReportHandler(ctx *fiber.Ctx) error {
 	loggedUser := GetLoggedUser(ctx)
-	var pdfGen helpers.HtmlPdfGenenerator
+	var pdfGen helpers.HtmlPdfGenerator
 	templateFile :=  "statistics.html"
 	fileName := "Statistic Report.pdf"
 	data := map[string]any{
