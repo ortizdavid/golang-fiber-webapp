@@ -53,7 +53,7 @@ func (UserController) index(ctx *fiber.Ctx) error {
 	count := int(countUsers)
 	totalPages := pagination.CalculateTotalPages(count, itemsPerPage)
 
-	if pageNumber > totalPages {
+	if count > 0 && pageNumber > totalPages {
 		return ctx.Status(500).Render("error/pagination", fiber.Map{
 			"Title": "Tasks",
 			"TotalPages": totalPages, 
