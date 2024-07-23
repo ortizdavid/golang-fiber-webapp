@@ -18,9 +18,9 @@ func (report ReportController) RegisterRoutes(router *fiber.App) {
 	router.Get("/reports/statistics", report.statisticsReportHandler)
 }
 
-func (ReportController) reportHandler(ctx *fiber.Ctx) error {
-	param := ctx.Query("param")
-	loggedUser := GetLoggedUser(ctx)
+func (ReportController) reportHandler(c *fiber.Ctx) error {
+	param := c.Query("param")
+	loggedUser := GetLoggedUser(c)
 	var report models.ReportModel
 	var tableReport models.TableReport
 	var pdfGen helpers.HtmlPdfGenerator
@@ -41,9 +41,9 @@ func (ReportController) reportHandler(ctx *fiber.Ctx) error {
 	case "blocked-tasks":
 		tableReport = report.GetAllBlockedTasks()
 	case "":
-		return 	ctx.Render("reports/index", fiber.Map{
+		return 	c.Render("reports/index", fiber.Map{
 			"Title": "Reports",
-			"LoggedUser": GetLoggedUser(ctx),
+			"LoggedUser": GetLoggedUser(c),
 		})
 	}
 	//-----------------------
@@ -59,15 +59,15 @@ func (ReportController) reportHandler(ctx *fiber.Ctx) error {
 	//----------- Render PDF
 	pdfBytes, err := pdfGen.GeneratePDF(fmt.Sprintf("templates/reports/%s", templateFile), data)
 	if err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
-	pdfGen.SetOutput(ctx, pdfBytes, fileName)
+	pdfGen.SetOutput(c, pdfBytes, fileName)
 	loggerReport.Info(fmt.Sprintf("User '%s' generated '%s' Report", loggedUser.UserName, tableReport.Title))
 	return nil
 }
 
-func (ReportController) statisticsReportHandler(ctx *fiber.Ctx) error {
-	loggedUser := GetLoggedUser(ctx)
+func (ReportController) statisticsReportHandler(c *fiber.Ctx) error {
+	loggedUser := GetLoggedUser(c)
 	var pdfGen helpers.HtmlPdfGenerator
 	templateFile :=  "statistics.html"
 	fileName := "Statistic Report.pdf"
@@ -75,14 +75,14 @@ func (ReportController) statisticsReportHandler(ctx *fiber.Ctx) error {
 		"Title": "Statistic Report",
 		"AppName": "Task Management App",
 		"Statistics": models.GetStatisticsCount(),
-		"LoggedUser": GetLoggedUser(ctx),
+		"LoggedUser": GetLoggedUser(c),
 	}
 	//-----------------------
 	pdfBytes, err := pdfGen.GeneratePDF(fmt.Sprintf("templates/reports/%s", templateFile), data)
 	if err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
-	pdfGen.SetOutput(ctx, pdfBytes, fileName)
+	pdfGen.SetOutput(c, pdfBytes, fileName)
 	loggerReport.Info(fmt.Sprintf("User '%s' generated '%s' Report", loggedUser.UserName, "Statistics"))
 	return nil
 }

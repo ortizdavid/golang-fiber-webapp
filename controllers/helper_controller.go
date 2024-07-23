@@ -9,28 +9,28 @@ import (
 	"github.com/ortizdavid/golang-fiber-webapp/models"
 )
 
-func GetLoggedUser(ctx *fiber.Ctx) entities.UserData {
+func GetLoggedUser(c *fiber.Ctx) entities.UserData {
     store := config.GetSessionStore()
-    session, _ := store.Get(ctx)
+    session, _ := store.Get(c)
     userName := helpers.ConvertToString(session.Get("username"))
     password := helpers.ConvertToString(session.Get("password"))
 	loggedUser, _ := models.UserModel{}.GetByUserNameAndPassword(userName, password)
     return loggedUser
 }
 
-func IsUserNomal(ctx *fiber.Ctx) bool {
-	loggedUser := GetLoggedUser(ctx)
+func IsUserNomal(c *fiber.Ctx) bool {
+	loggedUser := GetLoggedUser(c)
 	return loggedUser.RoleCode == "normal"
 }
 
-func IsUserAdmin(ctx *fiber.Ctx) bool {
-	loggedUser := GetLoggedUser(ctx)
+func IsUserAdmin(c *fiber.Ctx) bool {
+	loggedUser := GetLoggedUser(c)
 	return loggedUser.RoleCode == "admin"
 }
 
-func PaginationHandler(ctx *fiber.Ctx) error {
+func PaginationHandler(c *fiber.Ctx) error {
 	var pagination helpers.Pagination
-	pageNumber := pagination.GetPageNumber(ctx, "page")
-	return ctx.Redirect(fmt.Sprintf("/?page=%d", pageNumber))
+	pageNumber := pagination.GetPageNumber(c, "page")
+	return c.Redirect(fmt.Sprintf("/?page=%d", pageNumber))
 }
 

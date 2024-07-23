@@ -36,15 +36,15 @@ func (task TaskController) RegisterRoutes(router *fiber.App) {
 }
 
 
-func (TaskController) index(ctx *fiber.Ctx) error {
+func (TaskController) index(c *fiber.Ctx) error {
 	
 	var pagination helpers.Pagination
 	var taskModel models.TaskModel
 	var tasks []entities.TaskData
 	var count int
 
-	loggedUser := GetLoggedUser(ctx)
-	pageNumber := pagination.GetPageNumber(ctx, "page")
+	loggedUser := GetLoggedUser(c)
+	pageNumber := pagination.GetPageNumber(c, "page")
 	itemsPerPage := config.ItemsPerPage()
 	startIndex := pagination.CalculateStartIndex(pageNumber, itemsPerPage)
 	tasks, _ = taskModel.FindAllDataLimit(startIndex, itemsPerPage)
@@ -53,14 +53,14 @@ func (TaskController) index(ctx *fiber.Ctx) error {
 	totalPages := pagination.CalculateTotalPages(count, itemsPerPage)
 
 	if count > 0 && pageNumber > totalPages {
-		return ctx.Status(500).Render("error/pagination", fiber.Map{
+		return c.Status(500).Render("error/pagination", fiber.Map{
 			"Title": "Tasks",
 			"TotalPages": totalPages, 
 			"LoggedUser": loggedUser,
 		})
 	}
 	if loggedUser.RoleCode != "normal" {
-		return ctx.Render("task/index", fiber.Map{
+		return c.Render("task/index", fiber.Map{
 			"Title": "Tasks",
 			"Tasks": tasks,
 			"Pagination": helpers.NewPaginationRender(pageNumber),
@@ -71,7 +71,7 @@ func (TaskController) index(ctx *fiber.Ctx) error {
 	userTasks, _ := taskModel.FindAllDataByUserIdLimit(loggedUser.UserId, startIndex, itemsPerPage)
 	countByUser, _ := taskModel.CountByUser(loggedUser.UserId)
 	count = int(countByUser)
-	return ctx.Render("task/my-tasks", fiber.Map{
+	return c.Render("task/my-tasks", fiber.Map{
 		"Title": "My Tasks",
 		"Tasks": userTasks,
 		"Pagination": helpers.NewPaginationRender(pageNumber),
@@ -81,37 +81,37 @@ func (TaskController) index(ctx *fiber.Ctx) error {
 }
 
 
-func (TaskController) details(ctx *fiber.Ctx) error {
-	id := ctx.Params("id")
+func (TaskController) details(c *fiber.Ctx) error {
+	id := c.Params("id")
 	task, _ := models.TaskModel{}.GetDataByUniqueId(id)
-	return ctx.Render("task/details", fiber.Map{
+	return c.Render("task/details", fiber.Map{
 		"Title": "Task Details",
 		"Task": task,
-		"LoggedUser": GetLoggedUser(ctx),
+		"LoggedUser": GetLoggedUser(c),
 	})
 }
 
 
-func (TaskController) addForm(ctx *fiber.Ctx) error {
+func (TaskController) addForm(c *fiber.Ctx) error {
 	complexities, _ := models.TaskComplexityModel{}.FindAll()
 	statuses, _ := models.TaskStatusModel{}.FindAll()
-	return ctx.Render("task/add", fiber.Map{
+	return c.Render("task/add", fiber.Map{
 		"Title": "Add Tasks",
 		"Complexities": complexities,
 		"Statuses": statuses,
-		"LoggedUser": GetLoggedUser(ctx),
+		"LoggedUser": GetLoggedUser(c),
 	})
 }
 
 
-func (TaskController) add(ctx *fiber.Ctx) error {
-	loggedUser := GetLoggedUser(ctx)
-	taskName := ctx.FormValue("task_name")
-	statusId := ctx.FormValue("status_id")
-	complexityId := ctx.FormValue("complexity_id")
-	description := ctx.FormValue("description")
-	startDate := ctx.FormValue("start_date")
-	endDate := ctx.FormValue("end_date")
+func (TaskController) add(c *fiber.Ctx) error {
+	loggedUser := GetLoggedUser(c)
+	taskName := c.FormValue("task_name")
+	statusId := c.FormValue("status_id")
+	complexityId := c.FormValue("complexity_id")
+	description := c.FormValue("description")
+	startDate := c.FormValue("start_date")
+	endDate := c.FormValue("end_date")
 
 	var taskModel models.TaskModel
 	task := entities.Task{
@@ -130,20 +130,20 @@ func (TaskController) add(ctx *fiber.Ctx) error {
 	}
 	_, err := taskModel.Create(task)
 	if err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
 	loggerTask.Info(fmt.Sprintf("User '%s' added Task '%s'", loggedUser.UserName, taskName))
-	return ctx.Redirect("/tasks")
+	return c.Redirect("/tasks")
 }
 
 
-func (TaskController) editForm(ctx *fiber.Ctx) error {
-	loggedUser := GetLoggedUser(ctx)
-	id := ctx.Params("id")
+func (TaskController) editForm(c *fiber.Ctx) error {
+	loggedUser := GetLoggedUser(c)
+	id := c.Params("id")
 	task, _ := models.TaskModel{}.GetDataByUniqueId(id)
 	statuses, _ := models.TaskStatusModel{}.FindAll()
 	complexities, _ := models.TaskComplexityModel{}.FindAll()
-	return ctx.Render("task/edit", fiber.Map{
+	return c.Render("task/edit", fiber.Map{
 		"Title": "Edit Task",
 		"Task": task,
 		"Statuses": statuses,
@@ -153,14 +153,14 @@ func (TaskController) editForm(ctx *fiber.Ctx) error {
 }
 
 
-func (TaskController) edit(ctx *fiber.Ctx) error {
-	id := ctx.Params("id")
-	taskName := ctx.FormValue("task_name")
-	statusId := ctx.FormValue("status_id")
-	complexityId := ctx.FormValue("complexity_id")
-	description := ctx.FormValue("description")
-	startDate := ctx.FormValue("start_date")
-	endDate := ctx.FormValue("end_date")
+func (TaskController) edit(c *fiber.Ctx) error {
+	id := c.Params("id")
+	taskName := c.FormValue("task_name")
+	statusId := c.FormValue("status_id")
+	complexityId := c.FormValue("complexity_id")
+	description := c.FormValue("description")
+	startDate := c.FormValue("start_date")
+	endDate := c.FormValue("end_date")
 
 	var taskModel models.TaskModel
 	task, _ := taskModel.FindByUniqueId(id)
@@ -173,31 +173,31 @@ func (TaskController) edit(ctx *fiber.Ctx) error {
 	task.UpdatedAt = time.Now()
 	_, err := taskModel.Update(task)
 	if err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
 	loggerTask.Info(fmt.Sprintf("Task '%s' Added ", taskName))
-	return ctx.Redirect(fmt.Sprintf("/tasks/%s/details", id))
+	return c.Redirect(fmt.Sprintf("/tasks/%s/details", id))
 }
 
 
-func (TaskController) searchForm(ctx *fiber.Ctx) error {
-	return ctx.Render("task/search", fiber.Map{
+func (TaskController) searchForm(c *fiber.Ctx) error {
+	return c.Render("task/search", fiber.Map{
 		"Title": "Search Tasks",
-		"LoggedUser": GetLoggedUser(ctx),
+		"LoggedUser": GetLoggedUser(c),
 	})
 }
 
 
-func (TaskController) search(ctx *fiber.Ctx) error {
-	param := ctx.FormValue("search_param")
+func (TaskController) search(c *fiber.Ctx) error {
+	param := c.FormValue("search_param")
 	results, err := models.TaskModel{}.Search(param)
 	if err != nil {
-		return ctx.Status(404).SendString(err.Error())
+		return c.Status(404).SendString(err.Error())
 	}
 	count := len(results)
-	loggedUser := GetLoggedUser(ctx)
+	loggedUser := GetLoggedUser(c)
 	loggerTask.Info(fmt.Sprintf("User '%s' Searched for Task '%v' and Found %d results", loggedUser.UserName, param, count))
-	return ctx.Render("task/search-results", fiber.Map{
+	return c.Render("task/search-results", fiber.Map{
 		"Title": "Results",
 		"Results": results,
 		"Param": param,
@@ -207,83 +207,83 @@ func (TaskController) search(ctx *fiber.Ctx) error {
 }
 
 
-func (TaskController) addAttachmentForm(ctx *fiber.Ctx) error {
-	id := ctx.Params("id")
+func (TaskController) addAttachmentForm(c *fiber.Ctx) error {
+	id := c.Params("id")
 	task, _ := models.TaskModel{}.FindByUniqueId(id)
-	return ctx.Render("task/add-attachment", fiber.Map{
+	return c.Render("task/add-attachment", fiber.Map{
 		"Title": "Add Attachment",
 		"Task": task,
-		"LoggedUser": GetLoggedUser(ctx),
+		"LoggedUser": GetLoggedUser(c),
 	})
 }
 
 
-func (TaskController) addAttachment(ctx *fiber.Ctx) error {
-	id := ctx.Params("id")
-	attachment, _ := helpers.UploadFile(ctx, "attachment", "document", config.UploadDocumentPath())
-	loggedUser := GetLoggedUser(ctx)
+func (TaskController) addAttachment(c *fiber.Ctx) error {
+	id := c.Params("id")
+	attachment, _ := helpers.UploadFile(c, "attachment", "document", config.UploadDocumentPath())
+	loggedUser := GetLoggedUser(c)
 
 	var taskModel models.TaskModel
 	task, err := taskModel.FindByUniqueId(id)
 	if err != nil {
-		return ctx.Status(404).SendString(err.Error())
+		return c.Status(404).SendString(err.Error())
 	}
 	task.Attachment = attachment
 	task.UpdatedAt = time.Now()
 	taskModel.Update(task)
 	loggerTask.Info(fmt.Sprintf("User '%s' added attachment for task '%s' ", loggedUser.UserName, task.TaskName))
-	return ctx.Redirect("/tasks/"+id+"/details")
+	return c.Redirect("/tasks/"+id+"/details")
 }
 
 
-func (TaskController) viewAttachment(ctx *fiber.Ctx) error {
-	id := ctx.Params("id")
+func (TaskController) viewAttachment(c *fiber.Ctx) error {
+	id := c.Params("id")
 	task, err := models.TaskModel{}.FindByUniqueId(id)
 	if err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
-	return ctx.SendFile("./static/uploads/docs/"+task.Attachment)
+	return c.SendFile("./static/uploads/docs/"+task.Attachment)
 }
 
 
-func (TaskController) uploadCSVForm(ctx *fiber.Ctx) error {
-	return ctx.Render("task/upload-csv", fiber.Map{
+func (TaskController) uploadCSVForm(c *fiber.Ctx) error {
+	return c.Render("task/upload-csv", fiber.Map{
 		"Title": "Upload Tasks from CSV file",
-		"LoggedUser": GetLoggedUser(ctx),
+		"LoggedUser": GetLoggedUser(c),
 	})
 }
 
 
-func (TaskController) uploadCSV(ctx *fiber.Ctx) error {
+func (TaskController) uploadCSV(c *fiber.Ctx) error {
 	var taskModel models.TaskModel
-	loggedUser := GetLoggedUser(ctx)
+	loggedUser := GetLoggedUser(c)
 
-	file, err := ctx.FormFile("csv_file")
+	file, err := c.FormFile("csv_file")
 	if err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
 
 	src, err := file.Open()
 	if err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
 	defer src.Close()
 
 	reader := csv.NewReader(src)
 	if err := models.SkipCSVHeader(reader); err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
 
 	tasksFromCSV, err := models.ParseTaskFromCSV(reader, loggedUser.UserId) // Parsing CSV
 	if err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
 
 	_, err = taskModel.CreateBatch(tasksFromCSV) // Inserting Batch
 	if  err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
 
 	loggerTask.Info(fmt.Sprintf("User '%s' Uploaded Task from CSV File '%s'", loggedUser.UserName, file.Filename))
-	return ctx.Redirect("/tasks")
+	return c.Redirect("/tasks")
 }

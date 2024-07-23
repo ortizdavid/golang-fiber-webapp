@@ -11,36 +11,36 @@ import (
 
 var requestLogger = config.NewLogger("requests.log")
 
-func RequestLoggerMiddleware(ctx *fiber.Ctx) error {
+func RequestLoggerMiddleware(c *fiber.Ctx) error {
 	requestLogger.Info("Request",
-		zap.String("Method", ctx.Method()),
-		zap.String("Path", ctx.Path()),
-		zap.String("StatusCode", fmt.Sprintf("%d", ctx.Response().StatusCode())),
+		zap.String("Method", c.Method()),
+		zap.String("Path", c.Path()),
+		zap.String("StatusCode", fmt.Sprintf("%d", c.Response().StatusCode())),
 	)
-	return ctx.Next()
+	return c.Next()
 }
 
-func AuthenticationMiddleware(ctx *fiber.Ctx) error {
-	requestedPath := ctx.Path()
+func AuthenticationMiddleware(c *fiber.Ctx) error {
+	requestedPath := c.Path()
 	if requestedPath ==  "/" || 
 		strings.HasPrefix(requestedPath, "/image") ||
 		strings.HasPrefix(requestedPath, "/css") ||
 		strings.HasPrefix(requestedPath, "/js") ||
 		strings.HasPrefix(requestedPath, "/auth") {
-		return ctx.Next()
+		return c.Next()
 	}
-	if !IsUserAuthenticated(ctx) {
+	if !IsUserAuthenticated(c) {
 		loggerAuth.Error(fmt.Sprintf("Authentication failed at: %s", requestedPath))
-		return ctx.Status(500).Render("error/authentication", fiber.Map{
+		return c.Status(500).Render("error/authentication", fiber.Map{
 			"Title": "Authentication Error",
 		})
 	}
-	return ctx.Next()
+	return c.Next()
 }
 
 
-func IsUserAuthenticated(ctx *fiber.Ctx) bool {
-	loggedUser := GetLoggedUser(ctx)
+func IsUserAuthenticated(c *fiber.Ctx) bool {
+	loggedUser := GetLoggedUser(c)
 	if loggedUser.UserId == 0 && loggedUser.RoleId == 0 {
 		return false
 	}

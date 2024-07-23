@@ -116,3 +116,5 @@
 {"level":"error","ts":"2024-01-16T14:11:22.427+0100","msg":"User '' failed to login"}
 {"level":"error","ts":"2024-01-18T10:23:06.732+0100","msg":"Authentication failed at: /favicon.ico"}
 {"level":"error","ts":"2024-01-18T10:23:10.565+0100","msg":"Authentication failed at: /favicon.ico"}
+{"level":"error","ts":"2024-07-16T14:55:12.979+0100","msg":"Authentication failed at: /favicon.ico"}
+{"level":"info","ts":"2024-07-16T14:55:22.266+0100","msg":"User 'admin@gmail.com' authenticated sucessfully!"}

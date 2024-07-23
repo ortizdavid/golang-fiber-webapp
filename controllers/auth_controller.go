@@ -25,67 +25,67 @@ func (auth AuthController) RegisterRoutes(router *fiber.App) {
 }
 
 
-func (AuthController) loginForm(ctx *fiber.Ctx) error {
-	return ctx.Render("auth/login", fiber.Map{
+func (AuthController) loginForm(c *fiber.Ctx) error {
+	return c.Render("auth/login", fiber.Map{
 		"Title": "Authentication",
 	})
 }
 
-func (AuthController) login(ctx *fiber.Ctx) error {
+func (AuthController) login(c *fiber.Ctx) error {
 	var userModel models.UserModel
-	userName := ctx.FormValue("username")
-	password := ctx.FormValue("password")
+	userName := c.FormValue("username")
+	password := c.FormValue("password")
 	user, _ := userModel.FindByUserName(userName)
 	userExists, _ := userModel.ExistsActiveUser(userName)
 	hashedPassword := user.Password
 	
 	if userExists && helpers.CheckPassword(hashedPassword, password) {
 		store := config.GetSessionStore()
-		session, _ := store.Get(ctx)
+		session, _ := store.Get(c)
 		session.Set("username", userName)
 		session.Set("password", hashedPassword)
 		session.Save()
 		user.Token = helpers.GenerateRandomToken()
 		userModel.Update(user)
 		loggerAuth.Info(fmt.Sprintf("User '%s' authenticated sucessfully!", userName))
-		return ctx.Redirect("/home")
+		return c.Redirect("/home")
 	} else {
 		loggerAuth.Error(fmt.Sprintf("User '%s' failed to login", userName))
-		return ctx.Status(401).Redirect("/auth/login")
+		return c.Status(401).Redirect("/auth/login")
 	}
 }
 
 
-func (AuthController) logout(ctx *fiber.Ctx) error {
-	loggedUser := GetLoggedUser(ctx)
+func (AuthController) logout(c *fiber.Ctx) error {
+	loggedUser := GetLoggedUser(c)
 	store := config.GetSessionStore()
-	session, err := store.Get(ctx)
+	session, err := store.Get(c)
 	if err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
 	err = session.Destroy()
 	if err != nil {
-		return ctx.Status(500).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
 	loggerAuth.Info(fmt.Sprintf("User '%s' logged out", loggedUser.UserName))
-	return ctx.Redirect("/auth/login")
+	return c.Redirect("/auth/login")
 }
 
 
-func (AuthController) getRecoveryLinkForm(ctx *fiber.Ctx) error {
-	return ctx.Render("auth/get-recovery-link", fiber.Map{
+func (AuthController) getRecoveryLinkForm(c *fiber.Ctx) error {
+	return c.Render("auth/get-recovery-link", fiber.Map{
 		"Title": "Recovery Link",
 	})
 }
 
 
-func (AuthController) getRecoveryLink(ctx *fiber.Ctx) error {
+func (AuthController) getRecoveryLink(c *fiber.Ctx) error {
 	var userModel models.UserModel
-	email := ctx.FormValue("email")
+	email := c.FormValue("email")
 	user, err := userModel.FindByUserName(email)
 
 	if err != nil {
-		return ctx.Status(404).SendString(err.Error())
+		return c.Status(404).SendString(err.Error())
 	}
 	
 	emailService := config.DefaultEmailService()
@@ -102,33 +102,33 @@ func (AuthController) getRecoveryLink(ctx *fiber.Ctx) error {
 	if err != nil {
 		fmt.Println("Error sending HTML email:", err)
 	}
-	loggerAuth.Info(fmt.Sprintf("User '%s' recovered password", email), config.LogRequestPath(ctx))
-	return ctx.Redirect("/auth/get-recovery-link")
+	loggerAuth.Info(fmt.Sprintf("User '%s' recovered password", email), config.LogRequestPath(c))
+	return c.Redirect("/auth/get-recovery-link")
 }
 
 
-func (AuthController) recoverPasswordForm(ctx *fiber.Ctx) error {
-	token := ctx.Params("token")
+func (AuthController) recoverPasswordForm(c *fiber.Ctx) error {
+	token := c.Params("token")
 	user, err := models.UserModel{}.FindByToken(token)
 
 	if err != nil {
-		return ctx.Status(404).SendString(err.Error())
+		return c.Status(404).SendString(err.Error())
 	}
-	return ctx.Render("auth/recover-password", fiber.Map{
+	return c.Render("auth/recover-password", fiber.Map{
 		"Title": "Password Recovery",
 		"User": user,
 	})
 }
 
 
-func (AuthController) recoverPassword(ctx *fiber.Ctx) error {
+func (AuthController) recoverPassword(c *fiber.Ctx) error {
 	var userModel models.UserModel
-	password := ctx.FormValue("password")
-	token := ctx.Params("token")
+	password := c.FormValue("password")
+	token := c.Params("token")
 
 	user, err := userModel.FindByToken(token)
 	if err != nil {
-		return ctx.Status(404).SendString(err.Error())
+		return c.Status(404).SendString(err.Error())
 	}
 
 	user.Password = helpers.HashPassword(password)
@@ -150,6 +150,6 @@ func (AuthController) recoverPassword(ctx *fiber.Ctx) error {
 		fmt.Println("Error sending HTML email:", err)
 	}
 
-	loggerAuth.Info(fmt.Sprintf("User '%s' recovered password", user.UserName), config.LogRequestPath(ctx))
-	return ctx.Redirect("/auth/login")
+	loggerAuth.Info(fmt.Sprintf("User '%s' recovered password", user.UserName), config.LogRequestPath(c))
+	return c.Redirect("/auth/login")
 }

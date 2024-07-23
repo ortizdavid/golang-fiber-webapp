@@ -15,36 +15,36 @@ func (back BackController) RegisterRoutes(router *fiber.App) {
 	router.Get("/upload-image", back.uploadImage)
 }
 
-func (BackController) home(ctx *fiber.Ctx) error {
-	loggedUser := GetLoggedUser(ctx)
+func (BackController) home(c *fiber.Ctx) error {
+	loggedUser := GetLoggedUser(c)
 	statistics := models.GetStatisticsCount()
-	if IsUserNomal(ctx) {
+	if IsUserNomal(c) {
 		statistics = models.GetStatisticsCountByUser(loggedUser.UserId)
 	}
-	return ctx.Render("back-office/home", fiber.Map{
+	return c.Render("back-office/home", fiber.Map{
 		"Title": "Home",
 		"Statistics": statistics,
 		"LoggedUser": loggedUser,
 	})
 }
 
-func (BackController) userData(ctx *fiber.Ctx) error {
-	return ctx.Render("back-office/user-data", fiber.Map{
+func (BackController) userData(c *fiber.Ctx) error {
+	return c.Render("back-office/user-data", fiber.Map{
 		"Title": "User Data",
-		"LoggedUser": GetLoggedUser(ctx),
+		"LoggedUser": GetLoggedUser(c),
 	})
 }
 
-func (BackController) changePassword(ctx *fiber.Ctx) error {
-	return ctx.Render("back-office/change-password", fiber.Map{
+func (BackController) changePassword(c *fiber.Ctx) error {
+	return c.Render("back-office/change-password", fiber.Map{
 		"Title": "Change Password",
-		"LoggedUser": GetLoggedUser(ctx),
+		"LoggedUser": GetLoggedUser(c),
 	})
 }
 
-func (BackController) uploadImage(ctx *fiber.Ctx) error {
-	return ctx.Render("back-office/upload-image", fiber.Map{
+func (BackController) uploadImage(c *fiber.Ctx) error {
+	return c.Render("back-office/upload-image", fiber.Map{
 		"Title": "Upload Image",
-		"LoggedUser": GetLoggedUser(ctx),
+		"LoggedUser": GetLoggedUser(c),
 	})
 }

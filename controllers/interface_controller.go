@@ -3,13 +3,13 @@ package controllers
 import "github.com/gofiber/fiber/v2"
 
 type InterfaceController interface {
-	index(ctx *fiber.Ctx) error
-	details(ctx *fiber.Ctx) error
-	addForm(ctx *fiber.Ctx) error
-	add(ctx *fiber.Ctx) error
-	editForm(ctx *fiber.Ctx) error
-	edit(ctx *fiber.Ctx) error
-	searchForm(ctx *fiber.Ctx) error
-	search(ctx *fiber.Ctx) error
+	index(c *fiber.Ctx) error
+	details(c *fiber.Ctx) error
+	addForm(c *fiber.Ctx) error
+	add(c *fiber.Ctx) error
+	editForm(c *fiber.Ctx) error
+	edit(c *fiber.Ctx) error
+	searchForm(c *fiber.Ctx) error
+	search(c *fiber.Ctx) error
 	RegisterRoutes(router *fiber.App)
 }

@@ -12,13 +12,13 @@ func (statistic StatisticController) RegisterRoutes(router *fiber.App) {
 	router.Get("/statistics", statistic.index)
 }
 
-func (StatisticController) index(ctx *fiber.Ctx) error {
-	loggedUser := GetLoggedUser(ctx)
+func (StatisticController) index(c *fiber.Ctx) error {
+	loggedUser := GetLoggedUser(c)
 	statistics :=  models.GetStatisticsCount()
 	if loggedUser.RoleCode == "normal" {
 		statistics = models.GetStatisticsCountByUser(loggedUser.UserId)
 	}
-	return ctx.Render("statistic/index", fiber.Map{
+	return c.Render("statistic/index", fiber.Map{
 		"Title": "Statistics",
 		"LoggedUser": loggedUser,
 		"Statistics": statistics,
